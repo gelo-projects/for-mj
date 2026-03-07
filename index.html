@@ -8,8 +8,8 @@
         :root {
             --s-top: #ff4500; --s-mid: #ff8c00; --s-bot: #ffcc00; --s-ocean: #0a0400; --s-wave: #ffcc00;
             --n-top: #020111; --n-mid: #050a30; --n-bot: #191970; --n-ocean: #020111; --n-wave: #ffffff;
-            /* Precise Dawn Matching image_c88ce8.jpg */
             --d-top: #ffafbd; --d-mid: #ffc3a0; --d-bot: #fff5f5; --d-ocean: #ffc3a0; --d-wave: #ffffff;
+            --slow-set: 15s cubic-bezier(0.4, 0, 0.2, 1);
             --ultra-smooth: 8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -21,7 +21,7 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; cursor: pointer; transition: opacity 2s;
         }
-        .start-btn { padding: 18px 36px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; }
+        .start-btn { padding: 18px 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; font-size: 0.9rem; }
 
         .world { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
 
@@ -31,24 +31,32 @@
             position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; 
         }
 
-        .star { position: absolute; background: white; border-radius: 50%; opacity: 0; transition: opacity 3s ease; z-index: 11; }
-        @keyframes twinkle { 0%, 100% { transform: scale(1); opacity: 0.3; } 50% { transform: scale(1.4); opacity: 1; } }
+        #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 5s ease; }
+        .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         
-        .body { position: absolute; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 15; transition: all 9s cubic-bezier(0.4, 0, 0.2, 1); }
-        .sun { width: 350px; height: 350px; background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); box-shadow: 0 0 100px #ff8c00; top: 60%; }
-        .moon { width: 250px; height: 250px; background: #fdfdfd; box-shadow: 0 0 80px rgba(255,255,255,0.8); top: 180%; opacity: 0; }
+        .body { position: absolute; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 15; }
+        .sun { 
+            width: clamp(150px, 60vw, 350px); height: clamp(150px, 60vw, 350px); 
+            background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); 
+            box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top var(--slow-set);
+        }
+        .moon { 
+            width: clamp(120px, 50vw, 250px); height: clamp(120px, 50vw, 250px); 
+            background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); 
+            top: 180%; opacity: 0; transition: all 9s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
         #textContainer { 
-            position: absolute; top: 35%; width: 100%; text-align: center; color: white; z-index: 30; 
-            pointer-events: none; display: flex; flex-wrap: wrap; justify-content: center; padding: 0 20px; 
+            position: absolute; top: 40%; width: 100%; text-align: center; color: white; z-index: 30; 
+            pointer-events: none; display: flex; flex-direction: column; align-items: center; padding: 0 20px; 
         }
-        .letter { 
-            display: inline-block; font-size: clamp(2rem, 8vw, 3.5rem); font-weight: 700; opacity: 0; 
-            filter: blur(10px); transition: 1.2s ease; transform: translateY(20px);
-            /* Plum shadow for readability on all backgrounds */
-            text-shadow: 0 0 15px rgba(44, 15, 61, 0.9), 0 0 30px rgba(255, 182, 193, 0.4); 
+        
+        .quote-letter { 
+            display: inline-block; opacity: 0; transition: opacity 0.5s ease; 
+            font-size: clamp(1.1rem, 5vw, 1.8rem); font-weight: 300; font-style: italic;
+            letter-spacing: 0.04em; text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
-        .letter-revealed { opacity: 1; filter: blur(0); transform: translateY(0); }
 
         .ocean { height: 40vh; background: var(--curr-ocean, var(--s-ocean)); position: relative; overflow: hidden; z-index: 5; transition: var(--ultra-smooth); }
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100vw; display: flex; flex-direction: column; align-items: center; }
@@ -60,19 +68,18 @@
         }
 
         @keyframes shimmer { 0%, 100% { transform: scaleX(0.8); opacity: 0.2; } 50% { transform: scaleX(1.1) translateX(10px); opacity: 0.5; } }
-        #canvas { position: absolute; inset: 0; z-index: 12; pointer-events: none; }
 
-        #finalOverlay { position: fixed; inset: 0; background: linear-gradient(to bottom, #ffffff, #fff9f0); display: none; z-index: 100; justify-content: center; align-items: center; opacity: 0; transition: opacity 6s ease-in; padding: 30px; }
-        .final-content { max-width: 600px; text-align: center; color: #4a344e; line-height: 1.8; font-size: 1.2rem; }
-        .heart { color: #ff6b6b; font-size: 3rem; margin-top: 20px; display: inline-block; animation: beat 1.5s infinite; }
+        #finalOverlay { position: fixed; inset: 0; background: linear-gradient(to bottom, #ffffff, #fff9f0); display: none; z-index: 100; justify-content: center; align-items: center; opacity: 0; transition: opacity 6s ease-in; padding: 25px; }
+        .final-content { max-width: 600px; text-align: center; color: #4a344e; line-height: 1.6; font-size: 1.1rem; }
+        .heart { color: #ff6b6b; font-size: 2.5rem; margin-top: 15px; display: inline-block; animation: beat 1.5s infinite; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
     </style>
 </head>
 <body>
 
     <div id="startOverlay" onclick="beginMagic()">
-        <p style="opacity: 0.6; letter-spacing: 2px;">HAPPY BIRTHDAY MJ</p>
-        <div class="start-btn">Touch to start</div>
+        <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem;">FOR MJ</p>
+        <div class="start-btn">Touch to open</div>
     </div>
 
     <div class="world" id="world">
@@ -80,8 +87,9 @@
             <div id="starField"></div>
             <div class="body sun" id="sun"></div>
             <div class="body moon" id="moon"></div>
-            <canvas id="canvas"></canvas>
-            <div id="textContainer"></div>
+            <div id="textContainer">
+                <div id="quoteDisplay" style="transition: opacity 2s;"></div>
+            </div>
         </div>
         <div class="ocean" id="ocean">
             <div class="reflection-layer" id="reflection"></div>
@@ -90,9 +98,9 @@
 
     <div id="finalOverlay">
         <div class="final-content">
-            <h1 style="color: #ff8e9b; font-size: 2.5rem; margin-bottom: 20px;">Happy Birthday, MJ. 🎉</h1>
+            <h1 style="color: #ff8e9b; margin-bottom: 15px;">Happy Birthday, MJ. 🎉</h1>
             <p>I just want you to know that having you in my life means a lot to me. You bring warmth and comfort that’s hard to find. I’m really thankful for all the moments we share.</p>
-            <p>I hope today brings you as much happiness as you bring to the people around you. You truly deserve it.</p>
+            <p style="margin-top: 10px;">I hope today brings you as much happiness as you bring to the people around you. You truly deserve it.</p>
             <div class="heart">❤</div>
         </div>
     </div>
@@ -100,27 +108,28 @@
     <script>
         const sun = document.getElementById('sun');
         const moon = document.getElementById('moon');
+        const starField = document.getElementById('starField');
+        const quoteDisplay = document.getElementById('quoteDisplay');
         const root = document.documentElement;
 
-        for (let i = 0; i < 120; i++) {
+        // Generate static star field
+        for (let i = 0; i < 150; i++) {
             const s = document.createElement('div');
             s.className = 'star';
-            s.style.cssText = `width:2px; height:2px; left:${Math.random()*100}%; top:${Math.random()*70}%; animation: twinkle ${Math.random()*3+2}s infinite`;
-            document.getElementById('starField').appendChild(s);
-        }
-        for (let i = 0; i < 65; i++) {
-            const w = document.createElement('div');
-            w.className = 'wave'; w.style.width = `${Math.random()*40+60}%`;
-            w.style.animationDelay = `${Math.random()*5}s`;
-            document.getElementById('reflection').appendChild(w);
+            const size = Math.random() * 2 + 0.5;
+            s.style.cssText = `
+                width:${size}px; height:${size}px; 
+                left:${Math.random()*100}%; top:${Math.random()*90}%; 
+                --t:${2 + Math.random()*4}s;
+            `;
+            starField.appendChild(s);
         }
 
-        const msg = "Happy Birthday MJ ❤"; 
-        msg.split("").forEach(char => {
-            const span = document.createElement('span');
-            span.className = 'letter'; span.innerHTML = char === " " ? "&nbsp;" : char;
-            document.getElementById('textContainer').appendChild(span);
-        });
+        for (let i = 0; i < 50; i++) {
+            const w = document.createElement('div');
+            w.className = 'wave'; w.style.width = `${Math.random()*40+60}%`;
+            document.getElementById('reflection').appendChild(w);
+        }
 
         function beginMagic() {
             document.getElementById('startOverlay').style.opacity = '0';
@@ -128,39 +137,52 @@
                 document.getElementById('startOverlay').style.display = 'none';
                 document.getElementById('world').style.opacity = '1';
                 orchestrate();
-            }, 1000);
+            }, 800);
+        }
+
+        async function typeQuote(text, color = "white") {
+            quoteDisplay.innerHTML = "";
+            quoteDisplay.style.color = color;
+            quoteDisplay.style.opacity = "1";
+            const chars = text.split("");
+            for (let char of chars) {
+                const span = document.createElement('span');
+                span.className = 'quote-letter';
+                span.innerHTML = char === " " ? "&nbsp;" : char;
+                quoteDisplay.appendChild(span);
+                setTimeout(() => span.style.opacity = "1", 10);
+                await wait(60);
+            }
+            await wait(4500);
+            quoteDisplay.style.opacity = "0";
+            await wait(2500);
         }
 
         async function orchestrate() {
-            // 1. Sun sets
+            // 1. SUNSET & STARS APPEARING
             sun.style.top = '190%';
+            setTimeout(() => starField.style.opacity = "0.7", 4000); 
+            await wait(1500);
+            await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
             
-            // 2. IMMEDIATE Night Transition - Moon Rise
-            await wait(2500); 
+            // 2. NIGHT
             updateTheme('night');
             moon.style.opacity = '1'; 
             moon.style.top = '35%';
-            document.querySelectorAll('.star').forEach(s => s.style.opacity = '0.8');
+            await wait(1000);
+            await typeQuote("“And the moon rises to guard the quiet of the night.”");
 
-            // 3. Moon in place -> Celebration
-            await wait(7000); 
-            activeFireworks = true; startFireworks();
-            
-            const letters = document.querySelectorAll('.letter');
-            for(let l of letters) { await wait(150); l.classList.add('letter-revealed'); }
-
-            // 4. Smooth Fade to Dawn (The Sunrise you liked)
-            await wait(10000);
+            // 3. DAWN & STARS FADING
             moon.style.top = '190%'; moon.style.opacity = '0';
-            document.querySelectorAll('.star').forEach(s => s.style.opacity = '0');
-            document.getElementById('textContainer').style.opacity = '0';
-            
-            await wait(3000);
+            starField.style.opacity = "0"; 
+            await wait(2000);
             updateTheme('dawn');
-            sun.style.background = 'radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%)';
+            sun.style.transition = 'top 12s ease-out';
             sun.style.top = '55%'; 
+            await wait(1500);
+            await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
             
-            await wait(8000);
+            // 4. FINAL
             document.getElementById('finalOverlay').style.display = 'flex';
             setTimeout(() => document.getElementById('finalOverlay').style.opacity = '1', 100);
         }
@@ -175,34 +197,6 @@
         }
 
         function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-        // Fireworks
-        const canvas = document.getElementById("canvas");
-        const ctx = canvas.getContext("2d");
-        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        let activeFireworks = false, particles = [];
-
-        function startFireworks() {
-            function loop() {
-                if (!activeFireworks && particles.length === 0) return;
-                ctx.clearRect(0,0,canvas.width,canvas.height);
-                if (activeFireworks && Math.random() < 0.05) createFirework();
-                particles.forEach((p, i) => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.05; p.alpha -= 0.01;
-                    ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
-                    ctx.fillRect(p.x, p.y, 2, 2);
-                    if (p.alpha <= 0) particles.splice(i, 1);
-                });
-                requestAnimationFrame(loop);
-            }
-            loop();
-        }
-
-        function createFirework() {
-            const x = Math.random()*canvas.width, y = Math.random()*canvas.height*0.5;
-            const color = `hsl(${Math.random()*360}, 100%, 75%)`;
-            for (let i=0; i<45; i++) particles.push({ x, y, color, vx:(Math.random()-0.5)*10, vy:(Math.random()-0.5)*10, alpha:1 });
-        }
     </script>
 </body>
 </html>
