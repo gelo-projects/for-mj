@@ -6,28 +6,35 @@
     <title>For MJ</title>
     <style>
         :root {
-            --s-top: #ff4500; --s-mid: #ff8c00; --s-bot: #ffcc00; --s-ocean: #0a0400; --s-wave: #ffcc00;
-            --n-top: #020111; --n-mid: #050a30; --n-bot: #191970; --n-ocean: #020111; --n-wave: #ffffff;
+            --s-top: #ff4500; --s-mid: #ff8c00; --s-bot: #ffcc00; --s-ocean: #4a1c00; --s-wave: #ffcc00;
+            --n-top: #020111; --n-mid: #050a30; --n-bot: #191970; --n-ocean: #0a0e29; --n-wave: #ffffff;
             --d-top: #ffafbd; --d-mid: #ffc3a0; --d-bot: #fff5f5; --d-ocean: #ffc3a0; --d-wave: #ffffff;
-            --slow-set: 15s cubic-bezier(0.4, 0, 0.2, 1);
+            --curr-t: var(--s-top); --curr-m: var(--s-mid); --curr-b: var(--s-bot);
+            --curr-ocean: var(--s-ocean); --curr-wave: var(--s-wave);
             --ultra-smooth: 8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', sans-serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', 'Georgia', serif; }
         
         #startOverlay {
             position: fixed; inset: 0; background: #020111; z-index: 1000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; cursor: pointer; transition: opacity 2s;
         }
-        .start-btn { padding: 18px 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; font-size: 0.9rem; }
+
+        .btn { 
+            padding: 18px 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; 
+            letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; font-size: 0.8rem;
+            background: rgba(255,255,255,0.05); color: white; cursor: pointer;
+            transition: all 0.4s ease; position: relative; overflow: hidden; outline: none;
+        }
+        .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 
         .world { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
 
         .sky { 
-            height: 60vh; 
-            background: linear-gradient(to bottom, var(--curr-t, var(--s-top)), var(--curr-m, var(--s-mid)), var(--curr-b, var(--s-bot)));
+            height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b));
             position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; 
         }
 
@@ -39,7 +46,7 @@
         .sun { 
             width: clamp(150px, 60vw, 350px); height: clamp(150px, 60vw, 350px); 
             background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); 
-            box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top var(--slow-set);
+            box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .moon { 
             width: clamp(120px, 50vw, 250px); height: clamp(120px, 50vw, 250px); 
@@ -49,37 +56,54 @@
 
         #textContainer { 
             position: absolute; top: 40%; width: 100%; text-align: center; color: white; z-index: 30; 
-            pointer-events: none; display: flex; flex-direction: column; align-items: center; padding: 0 20px; 
+            pointer-events: none; display: flex; flex-direction: column; align-items: center; padding: 0 10%; 
         }
         
         .quote-letter { 
             display: inline-block; opacity: 0; transition: opacity 0.5s ease; 
-            font-size: clamp(1.1rem, 5vw, 1.8rem); font-weight: 300; font-style: italic;
+            font-size: clamp(1rem, 4.5vw, 1.6rem); font-weight: 300; font-style: italic;
             letter-spacing: 0.04em; text-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        .ocean { height: 40vh; background: var(--curr-ocean, var(--s-ocean)); position: relative; overflow: hidden; z-index: 5; transition: var(--ultra-smooth); }
+        .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: var(--ultra-smooth); }
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100vw; display: flex; flex-direction: column; align-items: center; }
+        
         .wave { 
             width: 100%; height: 3px; margin: 2px 0; border-radius: 20px; 
-            background-color: var(--curr-wave, var(--s-wave)); 
-            opacity: 0.3; transition: background-color var(--ultra-smooth);
+            background-color: var(--curr-wave); opacity: 0.5; transition: background-color var(--ultra-smooth);
             animation: shimmer 6s infinite ease-in-out; 
         }
 
-        @keyframes shimmer { 0%, 100% { transform: scaleX(0.8); opacity: 0.2; } 50% { transform: scaleX(1.1) translateX(10px); opacity: 0.5; } }
+        @keyframes shimmer { 0%, 100% { transform: scaleX(0.7); opacity: 0.3; } 50% { transform: scaleX(1.1) translateX(15px); opacity: 0.8; } }
 
-        #finalOverlay { position: fixed; inset: 0; background: linear-gradient(to bottom, #ffffff, #fff9f0); display: none; z-index: 100; justify-content: center; align-items: center; opacity: 0; transition: opacity 6s ease-in; padding: 25px; }
-        .final-content { max-width: 600px; text-align: center; color: #4a344e; line-height: 1.6; font-size: 1.1rem; }
-        .heart { color: #ff6b6b; font-size: 2.5rem; margin-top: 15px; display: inline-block; animation: beat 1.5s infinite; }
+        #finalMessage { 
+            position: fixed; inset: 0; display: none; flex-direction: column; 
+            justify-content: center; align-items: center; opacity: 0; z-index: 100; 
+            background: linear-gradient(to bottom, #ffffff, #fff9f0); transition: opacity 3s; 
+        }
+        .final-content { 
+            width: 90%; max-width: 550px; text-align: center; color: #4a344e; 
+            /* Refined font size for the final message */
+            font-size: clamp(0.9rem, 4vw, 1.2rem); 
+            line-height: 2.0; font-weight: 300; font-style: italic; letter-spacing: 0.04em; 
+            padding: 20px; white-space: pre-wrap;
+        }
+        .heart { color: #ff6b6b; font-size: 2.5rem; margin-top: 15px; display: inline-block; animation: beat 1.5s infinite; opacity: 0; transition: opacity 2s; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+        
+        .replay-btn { 
+            margin-top: 25px; opacity: 0; transition: opacity 2s; 
+            color: #4a344e !important; border-color: rgba(74, 52, 78, 0.2) !important;
+        }
     </style>
 </head>
 <body>
 
+    <audio id="bgMusic" loop><source src="magic.mp3" type="audio/mpeg"></audio>
+
     <div id="startOverlay" onclick="beginMagic()">
         <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem;">FOR MJ</p>
-        <div class="start-btn">Touch to open</div>
+        <button class="btn">Touch to open</button>
     </div>
 
     <div class="world" id="world">
@@ -87,22 +111,17 @@
             <div id="starField"></div>
             <div class="body sun" id="sun"></div>
             <div class="body moon" id="moon"></div>
-            <div id="textContainer">
-                <div id="quoteDisplay" style="transition: opacity 2s;"></div>
-            </div>
+            <div id="textContainer"><div id="quoteDisplay"></div></div>
         </div>
         <div class="ocean" id="ocean">
             <div class="reflection-layer" id="reflection"></div>
         </div>
     </div>
 
-    <div id="finalOverlay">
-        <div class="final-content">
-            <h1 style="color: #ff8e9b; margin-bottom: 15px;">Happy Birthday, MJ. 🎉</h1>
-            <p>I just want you to know that having you in my life means a lot to me. You bring warmth and comfort that’s hard to find. I’m really thankful for all the moments we share.</p>
-            <p style="margin-top: 10px;">I hope today brings you as much happiness as you bring to the people around you. You truly deserve it.</p>
-            <div class="heart">❤</div>
-        </div>
+    <div id="finalMessage">
+        <div id="finalQuoteDisplay" class="final-content"></div>
+        <div class="heart" id="finalHeart">❤</div>
+        <button class="btn replay-btn" id="replayBtn" onclick="resetAndPlay()">Replay Journey</button>
     </div>
 
     <script>
@@ -110,18 +129,15 @@
         const moon = document.getElementById('moon');
         const starField = document.getElementById('starField');
         const quoteDisplay = document.getElementById('quoteDisplay');
+        const finalQuoteDisplay = document.getElementById('finalQuoteDisplay');
+        const music = document.getElementById('bgMusic');
         const root = document.documentElement;
 
-        // Generate static star field
         for (let i = 0; i < 150; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             const size = Math.random() * 2 + 0.5;
-            s.style.cssText = `
-                width:${size}px; height:${size}px; 
-                left:${Math.random()*100}%; top:${Math.random()*90}%; 
-                --t:${2 + Math.random()*4}s;
-            `;
+            s.style.cssText = `width:${size}px; height:${size}px; left:${Math.random()*100}%; top:${Math.random()*90}%; --t:${2 + Math.random()*4}s;`;
             starField.appendChild(s);
         }
 
@@ -132,6 +148,13 @@
         }
 
         function beginMagic() {
+            music.volume = 0; music.play().catch(e => console.log("Audio issue"));
+            let vol = 0;
+            const audioFade = setInterval(() => {
+                if (vol < 0.4) { vol += 0.02; music.volume = vol; }
+                else { clearInterval(audioFade); }
+            }, 200);
+
             document.getElementById('startOverlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('startOverlay').style.display = 'none';
@@ -140,55 +163,99 @@
             }, 800);
         }
 
-        async function typeQuote(text, color = "white") {
-            quoteDisplay.innerHTML = "";
-            quoteDisplay.style.color = color;
-            quoteDisplay.style.opacity = "1";
+        function resetAndPlay() {
+            document.getElementById('finalMessage').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('finalMessage').style.display = 'none';
+                document.getElementById('finalHeart').style.opacity = '0';
+                document.getElementById('replayBtn').style.opacity = '0';
+                finalQuoteDisplay.innerHTML = "";
+                updateTheme('sunset');
+                sun.style.transition = 'none'; sun.style.top = '60%';
+                moon.style.transition = 'none'; moon.style.top = '180%'; moon.style.opacity = '0';
+                starField.style.opacity = '0';
+                setTimeout(() => {
+                    sun.style.transition = 'top 15s cubic-bezier(0.4, 0, 0.2, 1)';
+                    moon.style.transition = 'all 9s cubic-bezier(0.4, 0, 0.2, 1)';
+                    orchestrate();
+                }, 100);
+            }, 2000);
+        }
+
+        async function typeQuote(container, text, color = "white") {
+            container.innerHTML = ""; container.style.color = color; container.style.opacity = "1";
+            const isFinal = container.id === "finalQuoteDisplay";
+            const parts = isFinal ? text.split("<b>") : [text];
+            
+            if (isFinal && parts.length > 1) {
+                await typeSequence(container, parts[0]);
+                const boldSpan = document.createElement('span');
+                boldSpan.style.fontWeight = "bold";
+                container.appendChild(boldSpan);
+                await typeSequence(boldSpan, parts[1].replace("</b>", ""));
+            } else {
+                await typeSequence(container, text);
+            }
+        }
+
+        async function typeSequence(element, text) {
             const chars = text.split("");
             for (let char of chars) {
                 const span = document.createElement('span');
                 span.className = 'quote-letter';
-                span.innerHTML = char === " " ? "&nbsp;" : char;
-                quoteDisplay.appendChild(span);
+                span.innerHTML = char === " " ? "&nbsp;" : char === "\n" ? "\n" : char;
+                element.appendChild(span);
                 setTimeout(() => span.style.opacity = "1", 10);
-                await wait(60);
+                await wait(45);
             }
-            await wait(4500);
-            quoteDisplay.style.opacity = "0";
-            await wait(2500);
         }
 
         async function orchestrate() {
-            // 1. SUNSET & STARS APPEARING
             sun.style.top = '190%';
             setTimeout(() => starField.style.opacity = "0.7", 4000); 
             await wait(1500);
-            await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
+            await typeQuote(quoteDisplay, "“A sunset is the sun’s fiery kiss to the night.”");
+            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(2000);
             
-            // 2. NIGHT
             updateTheme('night');
-            moon.style.opacity = '1'; 
-            moon.style.top = '35%';
+            moon.style.opacity = '1'; moon.style.top = '35%';
             await wait(1000);
-            await typeQuote("“And the moon rises to guard the quiet of the night.”");
+            await typeQuote(quoteDisplay, "“And the moon rises to guard the quiet of the night.”");
+            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(2000);
 
-            // 3. DAWN & STARS FADING
             moon.style.top = '190%'; moon.style.opacity = '0';
             starField.style.opacity = "0"; 
             await wait(2000);
             updateTheme('dawn');
-            sun.style.transition = 'top 12s ease-out';
-            sun.style.top = '55%'; 
+            sun.style.transition = 'top 12s ease-out'; sun.style.top = '55%'; 
             await wait(1500);
-            await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
+            await typeQuote(quoteDisplay, "“Until the sun returns with the promise of a new day.”", "#4a344e");
+            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(1500);
+
+            await typeQuote(quoteDisplay, "“And some people make every day feel a little brighter.”", "#4a344e");
+            await wait(4500); quoteDisplay.style.opacity = "0"; await wait(2500);
             
-            // 4. FINAL
-            document.getElementById('finalOverlay').style.display = 'flex';
-            setTimeout(() => document.getElementById('finalOverlay').style.opacity = '1', 100);
+            const finalBox = document.getElementById('finalMessage');
+            finalBox.style.display = 'flex'; 
+            setTimeout(() => finalBox.style.opacity = '1', 100);
+            await wait(2500);
+            
+            const message = "Happy Birthday, MJ. \u2764\ufe0f\n\n" +
+                            "I just want you to know that\n" +
+                            "having you in my life means a lot to me.\n" +
+                            "You bring warmth and comfort that’s hard to find.\n\n" + 
+                            "I hope today brings you as much happiness as you bring to others. You deserve all the good things life has to offer.\n\n\n" +
+                            "<b>And no matter where life takes you, just know that I’ll always be here for you.</b>";
+            
+            await typeQuote(finalQuoteDisplay, message, "#4a344e");
+            setTimeout(() => {
+                document.getElementById('finalHeart').style.opacity = '1';
+                document.getElementById('replayBtn').style.opacity = '1';
+            }, 1200);
         }
 
         function updateTheme(mode) {
-            const prefix = mode === 'night' ? '--n-' : '--d-';
+            const prefix = mode === 'night' ? '--n-' : mode === 'dawn' ? '--d-' : '--s-';
             root.style.setProperty('--curr-t', `var(${prefix}top)`);
             root.style.setProperty('--curr-m', `var(${prefix}mid)`);
             root.style.setProperty('--curr-b', `var(${prefix}bot)`);
