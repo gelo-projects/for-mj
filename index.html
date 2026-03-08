@@ -15,7 +15,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', 'Georgia', serif; }
+        body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', serif; }
         
         #startOverlay {
             position: fixed; inset: 0; background: #020111; z-index: 1000; 
@@ -24,77 +24,63 @@
         }
 
         .btn { 
-            padding: 18px 24px; border: 1px solid rgba(255,255,255,0.2); border-radius: 50px; 
-            letter-spacing: 2px; text-transform: uppercase; margin-top: 20px; font-size: 0.8rem;
-            background: rgba(255,255,255,0.05); color: white; cursor: pointer;
-            transition: all 0.4s ease; position: relative; overflow: hidden; outline: none;
-        }
-        .btn:hover { background: rgba(255,255,255,0.2); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-
-        .world { position: relative; width: 100%; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
-
-        .sky { 
-            height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b));
-            position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; 
+            padding: 12px 20px; border: 1px solid rgba(255,255,255,0.4); border-radius: 50px; 
+            letter-spacing: 2px; text-transform: uppercase; font-size: 0.7rem;
+            background: transparent; color: white; cursor: pointer;
+            transition: all 0.4s ease; outline: none;
         }
 
-        #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 5s ease; }
+        .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
+
+        .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; }
+        #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 5s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         
         .body { position: absolute; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 15; }
-        .sun { 
-            width: clamp(150px, 60vw, 350px); height: clamp(150px, 60vw, 350px); 
-            background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); 
-            box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .moon { 
-            width: clamp(120px, 50vw, 250px); height: clamp(120px, 50vw, 250px); 
-            background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); 
-            top: 180%; opacity: 0; transition: all 9s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .sun { width: clamp(150px, 60vw, 350px); height: clamp(150px, 60vw, 350px); background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s cubic-bezier(0.4, 0, 0.2, 1); }
+        .moon { width: clamp(120px, 50vw, 250px); height: clamp(120px, 50vw, 250px); background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 9s cubic-bezier(0.4, 0, 0.2, 1); }
 
-        #textContainer { 
-            position: absolute; top: 40%; width: 100%; text-align: center; color: white; z-index: 30; 
-            pointer-events: none; display: flex; flex-direction: column; align-items: center; padding: 0 10%; 
-        }
-        
-        .quote-letter { 
-            display: inline-block; opacity: 0; transition: opacity 0.5s ease; 
-            font-size: clamp(1rem, 4.5vw, 1.6rem); font-weight: 300; font-style: italic;
-            letter-spacing: 0.04em; text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
+        #textContainer { position: absolute; top: 40%; width: 100%; text-align: center; color: white; z-index: 30; pointer-events: none; padding: 0 10%; }
+        .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: clamp(1rem, 4.5vw, 1.4rem); font-weight: 300; font-style: italic; text-shadow: 0 0 10px rgba(0,0,0,0.5); }
 
         .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: var(--ultra-smooth); }
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100vw; display: flex; flex-direction: column; align-items: center; }
-        
-        .wave { 
-            width: 100%; height: 3px; margin: 2px 0; border-radius: 20px; 
-            background-color: var(--curr-wave); opacity: 0.5; transition: background-color var(--ultra-smooth);
-            animation: shimmer 6s infinite ease-in-out; 
-        }
+        .wave { width: clamp(150px, 60vw, 350px); height: 3px; margin: 2px 0; border-radius: 20px; background-color: var(--curr-wave); opacity: 0.5; transition: background-color var(--ultra-smooth); }
+        .rock-left { animation: moveLeft 5s infinite ease-in-out; }
+        .rock-right { animation: moveRight 5s infinite ease-in-out; }
 
-        @keyframes shimmer { 0%, 100% { transform: scaleX(0.7); opacity: 0.3; } 50% { transform: scaleX(1.1) translateX(15px); opacity: 0.8; } }
+        @keyframes moveLeft { 0%, 100% { transform: translateX(-15px) scaleX(0.9); opacity: 0.3; } 50% { transform: translateX(10px) scaleX(1); opacity: 0.7; } }
+        @keyframes moveRight { 0%, 100% { transform: translateX(15px) scaleX(0.9); opacity: 0.3; } 50% { transform: translateX(-10px) scaleX(1); opacity: 0.7; } }
 
         #finalMessage { 
             position: fixed; inset: 0; display: none; flex-direction: column; 
             justify-content: center; align-items: center; opacity: 0; z-index: 100; 
-            background: linear-gradient(to bottom, #ffffff, #fff9f0); transition: opacity 3s; 
+            background: linear-gradient(to bottom, #ffffff, #fff9f0); transition: opacity 3s;
+            padding: 20px; overflow-y: auto;
         }
         .final-content { 
-            width: 90%; max-width: 550px; text-align: center; color: #4a344e; 
-            /* Refined font size for the final message */
-            font-size: clamp(0.9rem, 4vw, 1.2rem); 
-            line-height: 2.0; font-weight: 300; font-style: italic; letter-spacing: 0.04em; 
-            padding: 20px; white-space: pre-wrap;
+            width: 100%; max-width: 500px; text-align: center; color: #4a344e; 
+            line-height: 1.8; font-weight: 300; font-style: italic; 
+            white-space: pre-line; margin-bottom: 20px; font-size: 1rem;
         }
-        .heart { color: #ff6b6b; font-size: 2.5rem; margin-top: 15px; display: inline-block; animation: beat 1.5s infinite; opacity: 0; transition: opacity 2s; }
+
+        .heart { color: #ff3333; cursor: pointer; font-size: 2.5rem; animation: beat 1.5s infinite; opacity: 0; transition: opacity 2s; margin: 10px 0; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
-        
-        .replay-btn { 
-            margin-top: 25px; opacity: 0; transition: opacity 2s; 
-            color: #4a344e !important; border-color: rgba(74, 52, 78, 0.2) !important;
+
+        #heartGallery {
+            display: none; grid-template-columns: repeat(9, 1fr); grid-auto-rows: 40px;
+            gap: 4px; width: 95vw; max-width: 450px; opacity: 0; transition: opacity 1.5s;
         }
+        .g-img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; cursor: zoom-in; }
+
+        #lightbox {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000;
+            display: none; justify-content: center; align-items: center;
+        }
+        #lightbox img { max-width: 90%; max-height: 90%; border-radius: 8px; }
+
+        .replay-btn { opacity: 0; transition: opacity 2s; border-color: #4a344e; color: #4a344e; }
     </style>
 </head>
 <body>
@@ -102,7 +88,7 @@
     <audio id="bgMusic" loop><source src="magic.mp3" type="audio/mpeg"></audio>
 
     <div id="startOverlay" onclick="beginMagic()">
-        <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem;">FOR MJ</p>
+        <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 15px;">FOR MJ</p>
         <button class="btn">Touch to open</button>
     </div>
 
@@ -113,26 +99,49 @@
             <div class="body moon" id="moon"></div>
             <div id="textContainer"><div id="quoteDisplay"></div></div>
         </div>
-        <div class="ocean" id="ocean">
-            <div class="reflection-layer" id="reflection"></div>
-        </div>
+        <div class="ocean" id="ocean"><div class="reflection-layer" id="reflection"></div></div>
     </div>
 
     <div id="finalMessage">
         <div id="finalQuoteDisplay" class="final-content"></div>
-        <div class="heart" id="finalHeart">❤</div>
-        <button class="btn replay-btn" id="replayBtn" onclick="resetAndPlay()">Replay Journey</button>
+        <div id="heartGallery"></div> 
+        <div class="heart" id="finalHeart" onclick="showPhotos()">❤</div>
+        <button class="btn replay-btn" id="replayBtn" onclick="location.reload()">Replay Journey</button>
     </div>
 
-    <script>
-        const sun = document.getElementById('sun');
-        const moon = document.getElementById('moon');
-        const starField = document.getElementById('starField');
-        const quoteDisplay = document.getElementById('quoteDisplay');
-        const finalQuoteDisplay = document.getElementById('finalQuoteDisplay');
-        const music = document.getElementById('bgMusic');
-        const root = document.documentElement;
+    <div id="lightbox" onclick="this.style.display='none'"><img id="lightImg" src=""></div>
 
+    <script>
+        const heartMap = [
+            [0,2],[0,3],[0,5],[0,6],
+            [1,1],[1,2],[1,3],[1,4],[1,5],[1,6],[1,7],
+            [2,0],[2,1],[2,2],[2,3],[2,4],[2,5],[2,6],[2,7],[2,8],
+            [3,0],[3,1],[3,2],[3,3],[3,4],[3,5],[3,6],[3,7],[3,8],
+            [4,1],[4,2],[4,3],[4,4],[4,5],[4,6],[4,7],
+            [5,2],[5,3],[5,4],[5,5],[5,6],
+            [6,3],[6,4],[6,5],
+            [7,4]
+        ];
+
+        function createGallery() {
+            const gallery = document.getElementById('heartGallery');
+            heartMap.forEach((pos, i) => {
+                const img = document.createElement('img');
+                img.src = `img${i+1}.jpg`; 
+                img.className = 'g-img';
+                img.style.gridRowStart = pos[0] + 1;
+                img.style.gridColumnStart = pos[1] + 1;
+                img.onclick = (e) => {
+                    e.stopPropagation();
+                    document.getElementById('lightImg').src = img.src;
+                    document.getElementById('lightbox').style.display = 'flex';
+                };
+                gallery.appendChild(img);
+            });
+        }
+
+        // Initialize stars and waves
+        const starField = document.getElementById('starField');
         for (let i = 0; i < 150; i++) {
             const s = document.createElement('div');
             s.className = 'star';
@@ -141,20 +150,18 @@
             starField.appendChild(s);
         }
 
-        for (let i = 0; i < 50; i++) {
+        const reflection = document.getElementById('reflection');
+        for (let i = 0; i < 60; i++) {
             const w = document.createElement('div');
-            w.className = 'wave'; w.style.width = `${Math.random()*40+60}%`;
-            document.getElementById('reflection').appendChild(w);
+            w.className = `wave ${Math.random() > 0.5 ? 'rock-left' : 'rock-right'}`;
+            w.style.animationDelay = `${Math.random() * 4}s`;
+            w.style.width = `calc(clamp(150px, 60vw, 350px) * ${Math.random() * 0.15 + 0.9})`;
+            reflection.appendChild(w);
         }
 
         function beginMagic() {
-            music.volume = 0; music.play().catch(e => console.log("Audio issue"));
-            let vol = 0;
-            const audioFade = setInterval(() => {
-                if (vol < 0.4) { vol += 0.02; music.volume = vol; }
-                else { clearInterval(audioFade); }
-            }, 200);
-
+            const music = document.getElementById('bgMusic');
+            music.play();
             document.getElementById('startOverlay').style.opacity = '0';
             setTimeout(() => {
                 document.getElementById('startOverlay').style.display = 'none';
@@ -163,107 +170,103 @@
             }, 800);
         }
 
-        function resetAndPlay() {
-            document.getElementById('finalMessage').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('finalMessage').style.display = 'none';
-                document.getElementById('finalHeart').style.opacity = '0';
-                document.getElementById('replayBtn').style.opacity = '0';
-                finalQuoteDisplay.innerHTML = "";
-                updateTheme('sunset');
-                sun.style.transition = 'none'; sun.style.top = '60%';
-                moon.style.transition = 'none'; moon.style.top = '180%'; moon.style.opacity = '0';
-                starField.style.opacity = '0';
-                setTimeout(() => {
-                    sun.style.transition = 'top 15s cubic-bezier(0.4, 0, 0.2, 1)';
-                    moon.style.transition = 'all 9s cubic-bezier(0.4, 0, 0.2, 1)';
-                    orchestrate();
-                }, 100);
-            }, 2000);
+        function showPhotos() {
+            document.getElementById('finalQuoteDisplay').style.display = 'none';
+            document.getElementById('finalHeart').style.display = 'none';
+            const gallery = document.getElementById('heartGallery');
+            gallery.style.display = 'grid';
+            setTimeout(() => gallery.style.opacity = '1', 50);
         }
 
         async function typeQuote(container, text, color = "white") {
             container.innerHTML = ""; container.style.color = color; container.style.opacity = "1";
-            const isFinal = container.id === "finalQuoteDisplay";
-            const parts = isFinal ? text.split("<b>") : [text];
-            
-            if (isFinal && parts.length > 1) {
-                await typeSequence(container, parts[0]);
-                const boldSpan = document.createElement('span');
-                boldSpan.style.fontWeight = "bold";
-                container.appendChild(boldSpan);
-                await typeSequence(boldSpan, parts[1].replace("</b>", ""));
-            } else {
-                await typeSequence(container, text);
-            }
-        }
-
-        async function typeSequence(element, text) {
-            const chars = text.split("");
-            for (let char of chars) {
-                const span = document.createElement('span');
-                span.className = 'quote-letter';
-                span.innerHTML = char === " " ? "&nbsp;" : char === "\n" ? "\n" : char;
-                element.appendChild(span);
+            for (let char of text.split("")) {
+                const span = document.createElement("span");
+                span.className = "quote-letter";
+                span.innerHTML = char === " " ? "&nbsp;" : char;
+                container.appendChild(span);
                 setTimeout(() => span.style.opacity = "1", 10);
                 await wait(45);
             }
         }
 
+        async function typeFinalMessage(element, text) {
+            element.innerHTML = "";
+            const lines = text.split("\n");
+            for (let line of lines) {
+                const div = document.createElement('div');
+                element.appendChild(div);
+                for (let word of line.split(" ")) {
+                    const span = document.createElement('span');
+                    span.textContent = word + " ";
+                    span.style.opacity = "0";
+                    span.style.transition = "opacity 0.5s ease";
+                    div.appendChild(span);
+                    setTimeout(() => span.style.opacity = "1", 10);
+                    await wait(140);
+                }
+                await wait(300);
+            }
+        }
+
         async function orchestrate() {
+            const sun = document.getElementById('sun');
+            const moon = document.getElementById('moon');
+            const quoteDisplay = document.getElementById('quoteDisplay');
+
+            // Sunset sequence
             sun.style.top = '190%';
             setTimeout(() => starField.style.opacity = "0.7", 4000); 
-            await wait(1500);
             await typeQuote(quoteDisplay, "“A sunset is the sun’s fiery kiss to the night.”");
-            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(2000);
+            await wait(4500); quoteDisplay.style.opacity = "0"; await wait(2000);
             
+            // Night sequence
             updateTheme('night');
             moon.style.opacity = '1'; moon.style.top = '35%';
-            await wait(1000);
             await typeQuote(quoteDisplay, "“And the moon rises to guard the quiet of the night.”");
-            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(2000);
+            await wait(4500); quoteDisplay.style.opacity = "0"; await wait(2000);
 
+            // Dawn/Sunrise sequence
             moon.style.top = '190%'; moon.style.opacity = '0';
-            starField.style.opacity = "0"; 
-            await wait(2000);
             updateTheme('dawn');
             sun.style.transition = 'top 12s ease-out'; sun.style.top = '55%'; 
-            await wait(1500);
             await typeQuote(quoteDisplay, "“Until the sun returns with the promise of a new day.”", "#4a344e");
-            await wait(4000); quoteDisplay.style.opacity = "0"; await wait(1500);
+            await wait(4500); quoteDisplay.style.opacity = "0"; await wait(1500);
 
+            // Restored Bridge Quote
             await typeQuote(quoteDisplay, "“And some people make every day feel a little brighter.”", "#4a344e");
-            await wait(4500); quoteDisplay.style.opacity = "0"; await wait(2500);
-            
+            await wait(5000); quoteDisplay.style.opacity = "0"; await wait(2500);
+
+            // Final Message
             const finalBox = document.getElementById('finalMessage');
             finalBox.style.display = 'flex'; 
             setTimeout(() => finalBox.style.opacity = '1', 100);
-            await wait(2500);
             
-            const message = "Happy Birthday, MJ. \u2764\ufe0f\n\n" +
-                            "I just want you to know that\n" +
-                            "having you in my life means a lot to me.\n" +
-                            "You bring warmth and comfort that’s hard to find.\n\n" + 
-                            "I hope today brings you as much happiness as you bring to others. You deserve all the good things life has to offer.\n\n\n" +
-                            "<b>And no matter where life takes you, just know that I’ll always be here for you.</b>";
-            
-            await typeQuote(finalQuoteDisplay, message, "#4a344e");
-            setTimeout(() => {
-                document.getElementById('finalHeart').style.opacity = '1';
-                document.getElementById('replayBtn').style.opacity = '1';
-            }, 1200);
+            const message = `Happy Birthday, MJ.
+
+I just want you to know that having you in my life means a lot to me
+You bring warmth and comfort that’s hard to find.
+I hope today brings you as much happiness as you bring to others.
+You deserve all the good things life has to offer.
+
+And no matter where life takes you, just know that I’ll always be here for you.`;
+
+            await typeFinalMessage(document.getElementById('finalQuoteDisplay'), message);
+            document.getElementById('finalHeart').style.opacity = '1';
+            document.getElementById('replayBtn').style.opacity = '1';
         }
 
         function updateTheme(mode) {
-            const prefix = mode === 'night' ? '--n-' : mode === 'dawn' ? '--d-' : '--s-';
-            root.style.setProperty('--curr-t', `var(${prefix}top)`);
-            root.style.setProperty('--curr-m', `var(${prefix}mid)`);
-            root.style.setProperty('--curr-b', `var(${prefix}bot)`);
-            root.style.setProperty('--curr-ocean', `var(${prefix}ocean)`);
-            root.style.setProperty('--curr-wave', `var(${prefix}wave)`);
+            const prefix = mode === 'night' ? '--n-' : '--d-';
+            document.documentElement.style.setProperty('--curr-t', `var(${prefix}top)`);
+            document.documentElement.style.setProperty('--curr-m', `var(${prefix}mid)`);
+            document.documentElement.style.setProperty('--curr-b', `var(${prefix}bot)`);
+            document.documentElement.style.setProperty('--curr-ocean', `var(${prefix}ocean)`);
+            document.documentElement.style.setProperty('--curr-wave', `var(${prefix}wave)`);
         }
 
         function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+        window.onload = createGallery;
     </script>
 </body>
 </html>
