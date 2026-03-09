@@ -24,6 +24,16 @@
         }
 
         .btn { padding: 12px 24px; border: 1px solid white; border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; background: transparent; color: white; cursor: pointer; outline: none; }
+        
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        #timer { margin-top: 15px; font-size: 0.75rem; color: #ff8c00; letter-spacing: 1px; opacity: 0; transition: opacity 0.5s; }
+        #testBtn { position: absolute; bottom: 20px; font-size: 0.6rem; opacity: 0.2; color: white; text-decoration: underline; background: none; border: none; cursor: pointer; }
 
         .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
         .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; }
@@ -51,10 +61,12 @@
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 0.9rem; margin-bottom: 20px; white-space: pre-line; }
 
-        #heartContainer { display: none; grid-template-columns: repeat(11, clamp(25px, 8vw, 45px)); grid-auto-rows: clamp(25px, 8vw, 45px); gap: 4px; margin-top: 20px; position: relative; }
+        /* UPDATED HEART GRID - 9 Columns, 25 photos */
+        #heartContainer { display: none; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; }
         .photo { 
             width: 100%; height: 100%; object-fit: cover; border-radius: 5px; 
             opacity: 0; transform: scale(3); 
+            cursor: pointer; 
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; 
         }
         .photo.zoom-active { animation: zoomOutAction 1.2s forwards; }
@@ -76,9 +88,11 @@
 
     <audio id="bgMusic" loop preload="auto"><source src="magic.mp3" type="audio/mpeg"></audio>
 
-    <div id="startOverlay" onclick="beginMagic()">
+    <div id="startOverlay">
         <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 20px;">FOR MJ</p>
-        <button class="btn">Touch to open</button>
+        <button class="btn" id="openBtn" onclick="beginMagic(false)">Touch to open</button>
+        <p id="timer"></p>
+        <button id="testBtn" onclick="beginMagic(true)">[Dev] Test Animation Now</button>
     </div>
 
     <div class="world" id="world">
@@ -112,14 +126,20 @@
     </div>
 
     <script>
+        // REDUCED HEART MATRIX - 9 Columns, ~25 photos
         const heartShape = [
-            [0,0,1,1,0,0,0,1,1,0,0], [0,1,1,1,1,0,1,1,1,1,0], [1,1,1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1,1,1], [0,1,1,1,1,1,1,1,1,1,0], [0,0,1,1,1,1,1,1,1,0,0],
-            [0,0,0,1,1,1,1,1,0,0,0], [0,0,0,0,1,1,1,0,0,0,0], [0,0,0,0,0,1,0,0,0,0,0]
+            [0,1,1,0,0,0,1,1,0],
+            [1,1,1,1,0,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1],
+            [1,1,1,1,1,1,1,1,1],
+            [0,1,1,1,1,1,1,1,0],
+            [0,0,1,1,1,1,1,0,0],
+            [0,0,0,1,1,1,0,0,0],
+            [0,0,0,0,1,0,0,0,0]
         ];
 
         const photos = [];
-        for(let i=1; i<=41; i++) photos.push(`photos/${i}.jpg`);
+        for(let i=1; i<=25; i++) photos.push(`photos/${i}.jpg`);
 
         function initVisuals() {
             const stars = document.getElementById('starField');
@@ -138,7 +158,28 @@
             }
         }
 
-        function beginMagic() {
+        function beginMagic(isTest) {
+            if(!isTest) {
+                const target = new Date("March 19, 2026 00:00:00").getTime();
+                const now = new Date().getTime();
+                const diff = target - now;
+
+                if (diff > 0) {
+                    const btn = document.getElementById('openBtn');
+                    const timerText = document.getElementById('timer');
+                    btn.classList.add('shake');
+                    setTimeout(() => btn.classList.remove('shake'), 500);
+
+                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    
+                    timerText.style.opacity = "1";
+                    timerText.innerHTML = `Nice try, Ma'am! Haha. Wait for: ${days}d ${hours}h ${mins}m`;
+                    return;
+                }
+            }
+
             document.getElementById('bgMusic').play().catch(() => {});
             document.getElementById('startOverlay').style.opacity = '0';
             setTimeout(() => {
@@ -163,6 +204,7 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
+            
             sun.style.top = '190%';
             await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
             await new Promise(r => setTimeout(r, 3500));
@@ -171,10 +213,16 @@
 
             updateTheme('night');
             document.getElementById('starField').style.opacity = "0.8";
+            
+            // Fixed: Reduced moon rising delay
             moon.style.opacity = '1'; 
             moon.style.top = '30%'; 
+            
+            // FIXED: Ensuring reflection doesn't fade in too late
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 3000);
             await new Promise(r => setTimeout(r, 2000));
-            refl.style.opacity = '0.4';
+            
+            // FIXED: Restored missing moon quote
             await typeQuote("“And the moon rises to guard the quiet of the night.”");
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
@@ -204,9 +252,11 @@
                     let div = document.createElement("div");
                     if(cell === 1) {
                         let img = document.createElement("img");
+                        // Use modulo operator to cycle through photos if needed
                         img.src = photos[index % photos.length];
                         img.className = "photo";
-                        img.style.animationDelay = (index * 0.12) + "s";
+                        // Adjusted stagger timing for fewer photos
+                        img.style.animationDelay = (index * 0.15) + "s";
                         index++;
                         div.appendChild(img);
                         setTimeout(() => img.classList.add('zoom-active'), 50);
@@ -215,10 +265,9 @@
                 });
             });
 
-            // Automatically play video after heart is built + 5 second delay
             setTimeout(() => {
                 playBirthdayVideo();
-            }, (index * 120) + 5000);
+            }, (index * 150) + 5000); // Wait for heart construction + 5s
         }
 
         function playBirthdayVideo() {
