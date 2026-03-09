@@ -18,12 +18,12 @@
         body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', serif; }
         
         #startOverlay {
-            position: fixed; inset: 0; background: #020111; z-index: 2000; 
+            position: fixed; inset: 0; background: #020111; z-index: 5000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; cursor: pointer; transition: opacity 1s;
+            color: white; transition: opacity 1s;
         }
 
-        .btn { padding: 12px 24px; border: 1px solid white; border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; background: transparent; color: white; cursor: pointer; outline: none; }
+        .btn { padding: 12px 24px; border: 1px solid white; border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; background: transparent; color: white; cursor: pointer; outline: none; margin: 10px; transition: transform 0.1s; }
         
         .shake { animation: shake 0.5s; }
         @keyframes shake {
@@ -32,12 +32,11 @@
             75% { transform: translateX(10px); }
         }
 
-        #timer { margin-top: 15px; font-size: 0.75rem; color: #ff8c00; letter-spacing: 1px; opacity: 0; transition: opacity 0.5s; }
+        #timer { margin-top: 15px; font-size: 0.75rem; color: #ff8c00; letter-spacing: 1px; opacity: 0; transition: opacity 0.5s; text-align: center; line-height: 1.5; }
         #testBtn { position: absolute; bottom: 20px; font-size: 0.6rem; opacity: 0.2; color: white; text-decoration: underline; background: none; border: none; cursor: pointer; }
 
         .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
         .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; }
-        
         #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 5s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -59,34 +58,44 @@
         @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
 
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
-        .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 0.9rem; margin-bottom: 20px; white-space: pre-line; }
+        .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
 
-        /* UPDATED HEART GRID - 9 Columns, 25 photos */
-        #heartContainer { display: none; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; }
-        .photo { 
-            width: 100%; height: 100%; object-fit: cover; border-radius: 5px; 
-            opacity: 0; transform: scale(3); 
-            cursor: pointer; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.5s ease; 
-        }
-        .photo.zoom-active { animation: zoomOutAction 1.2s forwards; }
+        #heartContainer { display: grid; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; justify-content: center; display: none; }
+        .photo { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; opacity: 0; transform: scale(3); transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease; }
+        .photo.zoom-active { animation: zoomOutAction 1.5s forwards; }
         @keyframes zoomOutAction { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .photo:active { transform: scale(3.5) !important; z-index: 500; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        
+        .big-center-photo { grid-area: 3 / 3 / 6 / 8; z-index: 10; border: 3px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-radius: 8px; }
+
+        #finaleBanner { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; z-index: 600; pointer-events: none; transition: opacity 2s; text-align: center; width: 100%; }
+        
+        #loveText { 
+            position: absolute; top: 52%; left: 50%; transform: translateX(-50%); 
+            text-align: center; color: #ff3366; font-size: 1.6rem; font-weight: 300; 
+            font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; 
+        }
+
+        #endButtons { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 2s; z-index: 610; align-items: center; }
+        .end-btn { border-color: #ff3366; color: #ff3366; font-weight: bold; width: 220px; }
 
         #videoSection { position: fixed; inset: 0; background: black; display: none; justify-content: center; align-items: center; z-index: 3000; }
         #videoSection video { max-width: 90%; max-height: 80vh; border-radius: 12px; }
-
         .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
-        #finaleBanner { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ff3366; font-size: 2.5rem; font-weight: bold; text-shadow: 0 0 20px #fff, 0 0 30px #ff3366; opacity: 0; z-index: 600; pointer-events: none; transition: opacity 2s; text-align: center; width: 100%; }
-        .flying-heart { position: absolute; color: #ff4d6d; animation: flyUp 4s linear forwards; font-size: 20px; z-index: 550; pointer-events: none; }
-        @keyframes flyUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-600px) scale(1.5); opacity: 0; } }
+        .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; display: flex; align-items: center; justify-content: center; }
+        @keyframes flyUp { 
+            0% { transform: translateY(0) scale(0.6); opacity: 0; } 
+            15% { opacity: 0.5; }
+            85% { opacity: 0.3; }
+            100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } 
+        }
     </style>
 </head>
 <body onload="initVisuals()">
 
     <audio id="bgMusic" loop preload="auto"><source src="magic.mp3" type="audio/mpeg"></audio>
+    <audio id="personalSong" loop preload="auto"><source src="personal_song.mp3" type="audio/mpeg"></audio>
 
     <div id="startOverlay">
         <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 20px;">FOR MJ</p>
@@ -117,21 +126,27 @@
         </div>
         <div class="heart-icon" id="triggerHeart" onclick="startPhotoJourney()">❤</div>
         <div id="heartContainer"></div>
-        <div id="finaleBanner">HAPPY BIRTHDAY MJ! 🤍</div>
+        <div id="finaleBanner">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
+        <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
+        <div id="endButtons">
+            <button class="btn end-btn" onclick="replaySurprise()">Watch Again</button>
+            <button class="btn end-btn" onclick="resetJourney()">Start the Journey Again</button>
+        </div>
     </div>
 
     <div id="videoSection">
-        <video id="greetingVideo" controls><source src="video.mp4" type="video/mp4"></video>
+        <video id="greetingVideo"><source src="video.mp4" type="video/mp4"></video>
         <button class="btn" style="position: absolute; bottom: 30px; border-color:white;" onclick="closeVideo()">Close</button>
     </div>
 
     <script>
-        // REDUCED HEART MATRIX - 9 Columns, ~25 photos
+        let clickCount = 0;
         const heartShape = [
             [0,1,1,0,0,0,1,1,0],
             [1,1,1,1,0,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1],
-            [1,1,1,1,1,1,1,1,1],
+            [1,1,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,0,1,1],
             [0,1,1,1,1,1,1,1,0],
             [0,0,1,1,1,1,1,0,0],
             [0,0,0,1,1,1,0,0,0],
@@ -163,23 +178,26 @@
                 const target = new Date("March 19, 2026 00:00:00").getTime();
                 const now = new Date().getTime();
                 const diff = target - now;
-
+                
                 if (diff > 0) {
+                    clickCount++;
                     const btn = document.getElementById('openBtn');
                     const timerText = document.getElementById('timer');
+                    
                     btn.classList.add('shake');
                     setTimeout(() => btn.classList.remove('shake'), 500);
 
-                    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const days = Math.floor(diff / (864e5)), hours = Math.floor((diff % 864e5) / 36e5), mins = Math.floor((diff % 36e5) / 6e4);
                     
+                    let mainMsg = "Nice try, Ma'am! Haha.";
+                    if(clickCount === 2) mainMsg = "Wait ngani...";
+                    if(clickCount >= 3) mainMsg = "Ay excited yarn? wahahaha";
+
                     timerText.style.opacity = "1";
-                    timerText.innerHTML = `Nice try, Ma'am! Haha. Wait for: ${days}d ${hours}h ${mins}m`;
+                    timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m</small>`;
                     return;
                 }
             }
-
             document.getElementById('bgMusic').play().catch(() => {});
             document.getElementById('startOverlay').style.opacity = '0';
             setTimeout(() => {
@@ -204,29 +222,19 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-            
             sun.style.top = '190%';
             await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
             await new Promise(r => setTimeout(r, 3500));
             refl.style.opacity = '0';
             document.getElementById('quoteDisplay').style.opacity = "0";
-
             updateTheme('night');
             document.getElementById('starField').style.opacity = "0.8";
-            
-            // Fixed: Reduced moon rising delay
-            moon.style.opacity = '1'; 
-            moon.style.top = '30%'; 
-            
-            // FIXED: Ensuring reflection doesn't fade in too late
+            moon.style.opacity = '1'; moon.style.top = '30%'; 
             setTimeout(() => { refl.style.opacity = '0.4'; }, 3000);
             await new Promise(r => setTimeout(r, 2000));
-            
-            // FIXED: Restored missing moon quote
-            await typeQuote("“ And the moon rises to guard the quiet of the night.”");
+            await typeQuote("“And the moon rises to guard the quiet of the night.”");
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
-
             moon.style.top = '190%'; moon.style.opacity = '0';
             refl.style.opacity = '0';
             updateTheme('dawn');
@@ -234,7 +242,6 @@
             setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
             await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
             await new Promise(r => setTimeout(r, 4000));
-            
             const final = document.getElementById('finalMessage');
             final.style.display = 'flex';
             setTimeout(() => final.style.opacity = '1', 100);
@@ -246,60 +253,90 @@
             const container = document.getElementById('heartContainer');
             container.style.display = 'grid';
             
-            let index = 0;
-            heartShape.forEach(row => {
-                row.forEach(cell => {
-                    let div = document.createElement("div");
-                    if(cell === 1) {
+            let bigImg = document.createElement("img");
+            bigImg.src = "photos/family_big.jpg";
+            bigImg.className = "photo big-center-photo";
+            container.appendChild(bigImg);
+            
+            setTimeout(() => bigImg.classList.add('zoom-active'), 1500);
+
+            let photoIndex = 0;
+            heartShape.forEach((row, rIdx) => {
+                row.forEach((cell, cIdx) => {
+                    const isCenter = (rIdx >= 2 && rIdx <= 4 && cIdx >= 2 && cIdx <= 6);
+                    if(cell === 1 && !isCenter) {
+                        let div = document.createElement("div");
+                        div.style.gridArea = `${rIdx + 1} / ${cIdx + 1}`;
                         let img = document.createElement("img");
-                        // Use modulo operator to cycle through photos if needed
-                        img.src = photos[index % photos.length];
+                        img.src = photos[photoIndex % photos.length];
                         img.className = "photo";
-                        // Adjusted stagger timing for fewer photos
-                        img.style.animationDelay = (index * 0.15) + "s";
-                        index++;
+                        img.style.animationDelay = (photoIndex * 0.3) + "s";
                         div.appendChild(img);
+                        container.appendChild(div);
                         setTimeout(() => img.classList.add('zoom-active'), 50);
+                        photoIndex++;
                     }
-                    container.appendChild(div);
                 });
             });
-
-            setTimeout(() => {
-                playBirthdayVideo();
-            }, (index * 150) + 5000); // Wait for heart construction + 5s
+            setTimeout(playBirthdayVideo, (photoIndex * 300) + 8000);
         }
 
         function playBirthdayVideo() {
             document.getElementById('bgMusic').pause();
-            const section = document.getElementById('videoSection');
-            section.style.display = 'flex';
-            document.getElementById('greetingVideo').play();
-            document.getElementById('greetingVideo').onended = showFinale;
+            document.getElementById('videoSection').style.display = 'flex';
+            const vid = document.getElementById('greetingVideo');
+            vid.play();
+            vid.onended = showFinale;
         }
 
         function showFinale() {
             document.getElementById('videoSection').style.display = 'none';
-            document.getElementById('bgMusic').play();
-            document.getElementById('heartContainer').style.opacity = '0.2';
+            document.getElementById('personalSong').play();
+            document.getElementById('heartContainer').style.opacity = '0.1';
             document.getElementById('finaleBanner').style.opacity = '1';
+            document.getElementById('loveText').style.opacity = '1';
+            
+            const b = document.getElementById('endButtons');
+            b.style.display = 'flex';
+            setTimeout(() => b.style.opacity = '1', 500);
             
             setInterval(() => {
-                let h = document.createElement("div");
-                h.className = "flying-heart";
-                h.innerHTML = "❤";
+                const h = document.createElement("div");
+                h.className = "floating-obj";
+                
+                if (Math.random() > 0.4) {
+                    const img = document.createElement("img");
+                    img.src = photos[Math.floor(Math.random() * photos.length)];
+                    // Photos upscaled to 180px, upright, with a soft shadow
+                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity: 0.5; filter: blur(0.2px); border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);";
+                    h.appendChild(img);
+                } else {
+                    h.innerHTML = "❤";
+                    h.style.color = "#ff4d6d";
+                    h.style.fontSize = (30 + Math.random() * 30) + "px";
+                }
+                
                 h.style.left = Math.random() * 100 + "vw";
-                h.style.bottom = "0";
-                h.style.fontSize = (15 + Math.random() * 20) + "px";
+                h.style.bottom = "-200px";
+                h.style.animationDuration = (6 + Math.random() * 4) + "s";
+                
                 document.body.appendChild(h);
-                setTimeout(() => h.remove(), 4000);
-            }, 300);
+                setTimeout(() => h.remove(), 10000);
+            }, 450);
+        }
+
+        function replaySurprise() {
+            document.getElementById('videoSection').style.display = 'flex';
+            document.getElementById('greetingVideo').currentTime = 0;
+            document.getElementById('greetingVideo').play();
         }
 
         function closeVideo() { 
             document.getElementById('greetingVideo').pause();
             showFinale(); 
         }
+
+        function resetJourney() { location.reload(); }
 
         function updateTheme(mode) {
             const prefix = mode === 'night' ? '--n-' : '--d-';
@@ -312,5 +349,3 @@
     </script>
 </body>
 </html>
-
-
