@@ -295,12 +295,12 @@
             document.getElementById('sunGlow').style.opacity = "1";
 
             setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
-            await typeQuote("“And every sunrise makes life brighter with you in it.”", "#4a344e");
+            await typeQuote("“And every sunrise reminds me how lucky I am to know you.”", "#4a344e");
             await new Promise(r => setTimeout(r, 4000));
 
             document.getElementById('quoteDisplay').style.opacity = "0";
             await new Promise(r => setTimeout(r, 1200));
-            await typeQuote("“And some people make every day feel a little brighter.”", "#4a344e");
+            await typeQuote("“And somehow, the days feel a lot better with you in them.”", "#4a344e");
             await new Promise(r => setTimeout(r, 4200));
 
             const final = document.getElementById('finalMessage');
@@ -365,7 +365,7 @@
                 if (Math.random() > 0.4) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:150px; height:150px; object-fit:cover; border-radius:15px; opacity: 0.6; border: 2px solid white;";
+                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity: 0.7; border: 2px solid white;";
                     h.appendChild(img);
                 } else {
                     h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = (30 + Math.random()*30)+"px";
