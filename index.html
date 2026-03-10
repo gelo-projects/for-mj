@@ -24,13 +24,8 @@
         }
 
         .btn { padding: 12px 24px; border: 1px solid white; border-radius: 50px; letter-spacing: 2px; text-transform: uppercase; font-size: 0.8rem; background: transparent; color: white; cursor: pointer; outline: none; margin: 10px; transition: transform 0.1s; }
-        
         .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
 
         #timer { margin-top: 15px; font-size: 0.75rem; color: #ff8c00; letter-spacing: 1px; opacity: 0; transition: opacity 0.5s; text-align: center; line-height: 1.5; }
         #testBtn { position: absolute; bottom: 20px; font-size: 0.6rem; opacity: 0.2; color: white; text-decoration: underline; background: none; border: none; cursor: pointer; }
@@ -57,6 +52,33 @@
         @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
         @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
 
+        /* SHOOTING STARS */
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            z-index: 999;
+            pointer-events: none;
+        }
+        .shooting-star::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(to right, rgba(255,255,255,1), transparent);
+        }
+        @keyframes streak {
+    0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: rotate(-35deg) translateX(-1200px); opacity: 0; }
+}
+
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
 
@@ -64,16 +86,10 @@
         .photo { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; opacity: 0; transform: scale(3); transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease; }
         .photo.zoom-active { animation: zoomOutAction 1.5s forwards; }
         @keyframes zoomOutAction { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        
         .big-center-photo { grid-area: 3 / 3 / 6 / 8; z-index: 10; border: 3px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-radius: 8px; }
 
         #finaleBanner { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; z-index: 600; pointer-events: none; transition: opacity 2s; text-align: center; width: 100%; }
-        
-        #loveText { 
-            position: absolute; top: 52%; left: 50%; transform: translateX(-50%); 
-            text-align: center; color: #ff3366; font-size: 1.6rem; font-weight: 300; 
-            font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; 
-        }
+        #loveText { position: absolute; top: 52%; left: 50%; transform: translateX(-50%); text-align: center; color: #ff3366; font-size: 1.6rem; font-weight: 300; font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; }
 
         #endButtons { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 2s; z-index: 610; align-items: center; }
         .end-btn { border-color: #ff3366; color: #ff3366; font-weight: bold; width: 220px; }
@@ -84,12 +100,9 @@
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
         .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-        @keyframes flyUp { 
-            0% { transform: translateY(0) scale(0.6); opacity: 0; } 
-            15% { opacity: 0.5; }
-            85% { opacity: 0.3; }
-            100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } 
-        }
+        @keyframes flyUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.3; } 100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } }
+
+        .sun-glow { position: absolute; left: 50%; top: 60%; transform: translate(-50%, -50%); width: 600px; height: 300px; background: radial-gradient(circle, rgba(255,200,120,0.6) 0%, rgba(255,200,120,0.2) 40%, transparent 70%); opacity: 0; transition: opacity 4s ease; pointer-events: none; }
     </style>
 </head>
 <body onload="initVisuals()">
@@ -108,6 +121,7 @@
         <div class="sky" id="sky">
             <div id="starField"></div>
             <div class="body sun" id="sun"></div>
+            <div class="sun-glow" id="sunGlow"></div>
             <div class="body moon" id="moon"></div>
             <div id="textContainer"><div id="quoteDisplay"></div></div>
         </div>
@@ -141,23 +155,17 @@
 
     <script>
         let clickCount = 0;
+        let shootingStarTimer;
+        let timerInterval;
+
         const heartShape = [
-            [0,1,1,0,0,0,1,1,0],
-            [1,1,1,1,0,1,1,1,1],
-            [1,1,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,0,1,1],
-            [0,1,1,1,1,1,1,1,0],
-            [0,0,1,1,1,1,1,0,0],
-            [0,0,0,1,1,1,0,0,0],
-            [0,0,0,0,1,0,0,0,0]
+            [0,1,1,0,0,0,1,1,0], [1,1,1,1,0,1,1,1,1], [1,1,0,0,0,0,0,1,1],
+            [1,1,0,0,0,0,0,1,1], [1,1,0,0,0,0,0,1,1], [0,1,1,1,1,1,1,1,0],
+            [0,0,1,1,1,1,1,0,0], [0,0,0,1,1,1,0,0,0], [0,0,0,0,1,0,0,0,0]
         ];
 
         const photos = [];
         for(let i=1; i<=40; i++) photos.push(`photos/${i}.jpg`);
-
-        // Timer interval reference
-        let timerInterval;
 
         function initVisuals() {
             const stars = document.getElementById('starField');
@@ -176,77 +184,70 @@
             }
         }
 
-function beginMagic(isTest) {
-    const target = new Date("March 19, 2026 00:00:00").getTime();
-    
-    if(isTest) {
-        const password = prompt("Enter developer password:");
-        if (password !== "mysafeplace") {
-            alert("Access Denied.");
-            return;
-        }
-    } else {
-        const now = new Date().getTime();
-        const diff = target - now;
+        function createShootingStar() {
+    const sky = document.getElementById('sky');
+    // Spawning 2 to 3 stars per interval
+    const count = Math.floor(Math.random() * 2) + 2; 
+
+    for(let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'shooting-star';
         
-        if (diff > 0) {
-            clickCount++;
-            const btn = document.getElementById('openBtn');
-            const timerText = document.getElementById('timer');
-            
-            btn.classList.add('shake');
-            setTimeout(() => btn.classList.remove('shake'), 500);
+        // Randomize start positions
+        star.style.left = (Math.random() * 100) + '%';
+        star.style.top = (Math.random() * 40) + '%';
+        
+        // SLOW SPEED: Changed to 3 to 5 seconds
+        const duration = 3.0 + Math.random() * 2.0;
+        star.style.animation = `streak ${duration}s linear forwards`;
+        
+        sky.appendChild(star);
+        
+        // Clean up after the animation ends (5000ms is the max duration)
+        setTimeout(() => star.remove(), 5500);
+    }
+}
 
-            clearInterval(timerInterval);
-
-            const updateCountdown = () => {
-                const currentTime = new Date().getTime();
-                const currentDiff = target - currentTime;
-
-                if (currentDiff <= 0) {
+        function beginMagic(isTest) {
+            const target = new Date("March 19, 2026 00:00:00").getTime();
+            if(isTest) {
+                const password = prompt("Enter developer password:");
+                if (password !== "mysafeplace") { alert("Access Denied."); return; }
+            } else {
+                const now = new Date().getTime();
+                if (target - now > 0) {
+                    clickCount++;
+                    const btn = document.getElementById('openBtn');
+                    const timerText = document.getElementById('timer');
+                    btn.classList.add('shake');
+                    setTimeout(() => btn.classList.remove('shake'), 500);
                     clearInterval(timerInterval);
-                    timerText.innerHTML = "It's time! Click again. 🤍";
+                    const updateCountdown = () => {
+                        const cDiff = target - new Date().getTime();
+                        if (cDiff <= 0) { location.reload(); return; }
+                        const d = Math.floor(cDiff/864e5), h = Math.floor((cDiff%864e5)/36e5), m = Math.floor((cDiff%36e5)/6e4), s = Math.floor((cDiff%6e4)/1000);
+                        let msg = "Nice try, Ma'am! Wahaha.";
+                        if(clickCount === 2) msg = "Wait ngani...";
+                        if(clickCount === 3) msg = "Ay excited yarn? wahahaha";
+                        if(clickCount === 4) msg = "Ipipilit tlaga? wahahaha";
+                        if(clickCount >= 5) msg = "Patience… it's worth the wait. :)";
+                        timerText.style.opacity = "1";
+                        timerText.innerHTML = (clickCount >= 5) ? `${msg}<br><small>Wait for: ${d}d ${h}h ${m}m ${s}s</small>` : msg;
+                    };
+                    updateCountdown();
+                    timerInterval = setInterval(updateCountdown, 1000);
                     return;
                 }
-
-                const days = Math.floor(currentDiff / (864e5));
-                const hours = Math.floor((currentDiff % 864e5) / 36e5);
-                const mins = Math.floor((currentDiff % 36e5) / 6e4);
-                const secs = Math.floor((currentDiff % 6e4) / 1000);
-                
-                let mainMsg = "Nice try, Ma'am! Wahaha.";
-                if(clickCount === 2) mainMsg = "Wait ngani...";
-                if(clickCount === 3) mainMsg = "Ay excited yarn? wahahaha";
-                if(clickCount === 4) mainMsg = "Ipipilit tlaga? wahahaha";
-                if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
-
-                timerText.style.opacity = "1";
-
-                // THE FIX: Explicitly check clickCount here
-                if (clickCount >= 5) {
-                    timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
-                } else {
-                    // This prevents the "Wait for:" part from being added
-                    timerText.innerHTML = mainMsg;
-                }
-            };
-
-            updateCountdown();
-            timerInterval = setInterval(updateCountdown, 1000);
-            return;
+            }
+            clearInterval(timerInterval);
+            document.getElementById('bgMusic').play().catch(() => {});
+            document.getElementById('startOverlay').style.opacity = '0';
+            setTimeout(() => {
+                document.getElementById('startOverlay').style.display = 'none';
+                document.getElementById('world').style.opacity = '1';
+                orchestrate();
+            }, 1000);
         }
-    }
-
-    // Success - Start the animation
-    clearInterval(timerInterval);
-    document.getElementById('bgMusic').play().catch(() => {});
-    document.getElementById('startOverlay').style.opacity = '0';
-    setTimeout(() => {
-        document.getElementById('startOverlay').style.display = 'none';
-        document.getElementById('world').style.opacity = '1';
-        orchestrate();
-    }, 1000);
-}
 
         async function typeQuote(text, color = "white") {
             const display = document.getElementById('quoteDisplay');
@@ -262,75 +263,65 @@ function beginMagic(isTest) {
         }
 
         async function orchestrate() {
-    const sun = document.getElementById('sun'), 
-          moon = document.getElementById('moon'), 
-          refl = document.getElementById('reflection');
+            const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
 
-    // Start with Sunset
-    sun.style.top = '190%'; 
-    await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
-    await new Promise(r => setTimeout(r, 3500));
+            sun.style.top = '190%';
+            await typeQuote("“Every sunset reminds me of you.”");
+            await new Promise(r => setTimeout(r, 3500));
 
-    // TRANSITION TO NIGHT
-    refl.style.opacity = '0';
-    document.getElementById('quoteDisplay').style.opacity = "0";
-    updateTheme('night');
-    document.getElementById('starField').style.opacity = "0.8";
-    
-    // Moon comes up
-    moon.style.opacity = '1'; 
-    moon.style.top = '30%'; 
-    setTimeout(() => { refl.style.opacity = '0.4'; }, 3000);
-    
-    await new Promise(r => setTimeout(r, 2000));
-    await typeQuote("“And the moon rises to guard the quiet of the night.”");
-    await new Promise(r => setTimeout(r, 5000));
+            refl.style.opacity = '0';
+            document.getElementById('quoteDisplay').style.opacity = "0";
+            updateTheme('night');
+            document.getElementById('starField').style.opacity = "0.8";
+            
+            shootingStarTimer = setInterval(createShootingStar, 400);
 
-    // --- THE CRITICAL FIX START ---
-    document.getElementById('quoteDisplay').style.opacity = "0";
-    
-    // 1. Force the moon to start setting immediately
-    // We override the CSS transition briefly to make it move faster if needed
-    moon.style.transition = 'all 6s cubic-bezier(0.4, 0, 0.2, 1)'; 
-    moon.style.top = '190%'; 
-    moon.style.opacity = '0';
-    
-    // 2. Hide reflection during transition
-    refl.style.opacity = '0';
+            moon.style.opacity = '1'; moon.style.top = '30%'; 
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 2000);
+            
+            await new Promise(r => setTimeout(r, 3000));
+            await typeQuote("“And every moonrise brings you to my thoughts.”");
+            await new Promise(r => setTimeout(r, 3000));
 
-    // 3. Start dawn theme AT THE SAME TIME the moon starts moving
-    updateTheme('dawn');
+            clearInterval(shootingStarTimer);
+            document.getElementById('quoteDisplay').style.opacity = "0";
+            moon.style.transition = 'all 6s cubic-bezier(0.4, 0, 0.2, 1)'; 
+            moon.style.top = '190%'; moon.style.opacity = '0';
+            refl.style.opacity = '0';
 
-    // 4. Bring the sun up
-    sun.style.transition = 'top 10s ease-out'; 
-    sun.style.top = '55%'; 
-    
-    // Bring back reflection once the sun is visible
-    setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
-    // --- THE CRITICAL FIX END ---
+            updateTheme('dawn');
+            sun.style.transition = 'top 10s ease-out'; 
+            sun.style.top = '55%'; 
+            document.getElementById('sunGlow').style.opacity = "1";
 
-    await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
-    await new Promise(r => setTimeout(r, 4000));
-    
-    const final = document.getElementById('finalMessage');
-    final.style.display = 'flex';
-    setTimeout(() => final.style.opacity = '1', 100);
-}
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
+            await typeQuote("“And every sunrise makes life brighter with you in it.”", "#4a344e");
+            await new Promise(r => setTimeout(r, 4000));
+
+            document.getElementById('quoteDisplay').style.opacity = "0";
+            await new Promise(r => setTimeout(r, 1200));
+            await typeQuote("“And some people make every day feel a little brighter.”", "#4a344e");
+            await new Promise(r => setTimeout(r, 4200));
+
+            const final = document.getElementById('finalMessage');
+            final.style.display = 'flex';
+            setTimeout(() => final.style.opacity = '1', 100);
+        }
 
         function startPhotoJourney() {
             document.getElementById('finalQuote').style.display = 'none';
             document.getElementById('triggerHeart').style.display = 'none';
             const container = document.getElementById('heartContainer');
             container.style.display = 'grid';
+            container.innerHTML = ""; 
             
             let bigImg = document.createElement("img");
             bigImg.src = "photos/family_big.jpg";
             bigImg.className = "photo big-center-photo";
             container.appendChild(bigImg);
-            
             setTimeout(() => bigImg.classList.add('zoom-active'), 1500);
 
-            let photoIndex = 0;
+            let pIdx = 0;
             heartShape.forEach((row, rIdx) => {
                 row.forEach((cell, cIdx) => {
                     const isCenter = (rIdx >= 2 && rIdx <= 4 && cIdx >= 2 && cIdx <= 6);
@@ -338,17 +329,17 @@ function beginMagic(isTest) {
                         let div = document.createElement("div");
                         div.style.gridArea = `${rIdx + 1} / ${cIdx + 1}`;
                         let img = document.createElement("img");
-                        img.src = photos[photoIndex % photos.length];
+                        img.src = photos[pIdx % photos.length];
                         img.className = "photo";
-                        img.style.animationDelay = (photoIndex * 0.3) + "s";
+                        img.style.animationDelay = (pIdx * 0.2) + "s";
                         div.appendChild(img);
                         container.appendChild(div);
                         setTimeout(() => img.classList.add('zoom-active'), 50);
-                        photoIndex++;
+                        pIdx++;
                     }
                 });
             });
-            setTimeout(playBirthdayVideo, (photoIndex * 300) + 8000);
+            setTimeout(playBirthdayVideo, (pIdx * 200) + 8000);
         }
 
         function playBirthdayVideo() {
@@ -365,51 +356,39 @@ function beginMagic(isTest) {
             document.getElementById('heartContainer').style.opacity = '0.1';
             document.getElementById('finaleBanner').style.opacity = '1';
             document.getElementById('loveText').style.opacity = '1';
-            
             const b = document.getElementById('endButtons');
             b.style.display = 'flex';
             setTimeout(() => b.style.opacity = '1', 500);
-            
             setInterval(() => {
                 const h = document.createElement("div");
                 h.className = "floating-obj";
-                
                 if (Math.random() > 0.4) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity: 0.5; filter: blur(0.2px); border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);";
+                    img.style.cssText = "width:150px; height:150px; object-fit:cover; border-radius:15px; opacity: 0.6; border: 2px solid white;";
                     h.appendChild(img);
                 } else {
-                    h.innerHTML = "❤";
-                    h.style.color = "#ff4d6d";
-                    h.style.fontSize = (30 + Math.random() * 30) + "px";
+                    h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = (30 + Math.random()*30)+"px";
                 }
-                
-                h.style.left = Math.random() * 100 + "vw";
+                h.style.left = Math.random()*100 + "vw";
                 h.style.bottom = "-200px";
-                h.style.animationDuration = (6 + Math.random() * 4) + "s";
-                
+                h.style.animationDuration = (6 + Math.random()*4)+"s";
                 document.body.appendChild(h);
                 setTimeout(() => h.remove(), 10000);
-            }, 450);
+            }, 500);
         }
 
-function replaySurprise() {
-            // Lower the personal song volume so the video audio is clear
+        function replaySurprise() {
             const song = document.getElementById('personalSong');
-            if (song) song.volume = 0.3; // 30% volume
-
+            if (song) song.volume = 0.3;
             document.getElementById('videoSection').style.display = 'flex';
             const vid = document.getElementById('greetingVideo');
-            vid.currentTime = 0;
-            vid.play();
+            vid.currentTime = 0; vid.play();
         }
 
         function closeVideo() { 
-            // Bring the volume back up once the video is closed
             const song = document.getElementById('personalSong');
-            if (song) song.volume = 1.0; // 100% volume
-
+            if (song) song.volume = 1.0;
             document.getElementById('greetingVideo').pause();
             showFinale(); 
         }
@@ -427,7 +406,3 @@ function replaySurprise() {
     </script>
 </body>
 </html>
-
-
-
-
