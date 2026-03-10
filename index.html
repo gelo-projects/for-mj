@@ -122,7 +122,7 @@
             I hope today brings you as much happiness as you bring to others.
             And no matter where life takes you, just know that I’ll always be here for you.
 
-            (Touch the heart for a surprise)
+            I hope you like this surprise pa ba to? wahahaha
         </div>
         <div class="heart-icon" id="triggerHeart" onclick="startPhotoJourney()">❤</div>
         <div id="heartContainer"></div>
@@ -394,13 +394,22 @@ function beginMagic(isTest) {
             }, 450);
         }
 
-        function replaySurprise() {
+function replaySurprise() {
+            // Lower the personal song volume so the video audio is clear
+            const song = document.getElementById('personalSong');
+            if (song) song.volume = 0.3; // 30% volume
+
             document.getElementById('videoSection').style.display = 'flex';
-            document.getElementById('greetingVideo').currentTime = 0;
-            document.getElementById('greetingVideo').play();
+            const vid = document.getElementById('greetingVideo');
+            vid.currentTime = 0;
+            vid.play();
         }
 
         function closeVideo() { 
+            // Bring the volume back up once the video is closed
+            const song = document.getElementById('personalSong');
+            if (song) song.volume = 1.0; // 100% volume
+
             document.getElementById('greetingVideo').pause();
             showFinale(); 
         }
@@ -418,6 +427,7 @@ function beginMagic(isTest) {
     </script>
 </body>
 </html>
+
 
 
 
