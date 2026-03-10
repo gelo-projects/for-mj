@@ -156,6 +156,9 @@
         const photos = [];
         for(let i=1; i<=25; i++) photos.push(`photos/${i}.jpg`);
 
+        // Timer interval reference
+        let timerInterval;
+
         function initVisuals() {
             const stars = document.getElementById('starField');
             for(let i=0; i<80; i++) {
@@ -173,9 +176,19 @@
             }
         }
 
-        function beginMagic(isTest) {
-            if(!isTest) {
-                const target = new Date("March 19, 2026 00:00:00").getTime();
+function beginMagic(isTest) {
+            const target = new Date("March 19, 2026 00:00:00").getTime();
+            
+            if(isTest) {
+                // Password protection for the backdoor
+                const password = prompt("Enter developer password:");
+                if (password !== "mysafeplace") {
+                    alert("Access Denied.");
+                    return; // Stop the function if password is wrong
+                }
+                // If password is correct, it bypasses the date check and continues below
+            } else {
+                // Standard logic for MJ
                 const now = new Date().getTime();
                 const diff = target - now;
                 
@@ -187,17 +200,40 @@
                     btn.classList.add('shake');
                     setTimeout(() => btn.classList.remove('shake'), 500);
 
-                    const days = Math.floor(diff / (864e5)), hours = Math.floor((diff % 864e5) / 36e5), mins = Math.floor((diff % 36e5) / 6e4);
-                    
-                    let mainMsg = "Nice try, Ma'am! Haha.";
-                    if(clickCount === 2) mainMsg = "Wait ngani...";
-                    if(clickCount >= 3) mainMsg = "Ay excited yarn? wahahaha";
+                    clearInterval(timerInterval);
 
-                    timerText.style.opacity = "1";
-                    timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m</small>`;
+                    const updateCountdown = () => {
+                        const currentTime = new Date().getTime();
+                        const currentDiff = target - currentTime;
+
+                        if (currentDiff <= 0) {
+                            clearInterval(timerInterval);
+                            timerText.innerHTML = "It's time! Click again.";
+                            return;
+                        }
+
+                        const days = Math.floor(currentDiff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((currentDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const mins = Math.floor((currentDiff % (1000 * 60 * 60)) / (1000 * 60));
+                        const secs = Math.floor((currentDiff % (1000 * 60)) / 1000);
+                        
+                        let mainMsg = "Nice try, Ma'am! Haha.";
+                        if(clickCount === 2) mainMsg = "Wait ngani...";
+                        if(clickCount >= 3) mainMsg = "Ay excited yarn? wahahaha";
+                        if(clickCount >= 4) mainMsg = "Ipipilit tlaga? wahahaha";
+
+                        timerText.style.opacity = "1";
+                        timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
+                    };
+
+                    updateCountdown();
+                    timerInterval = setInterval(updateCountdown, 1000);
                     return;
                 }
             }
+
+            // If it's the right date OR the correct password was entered:
+            clearInterval(timerInterval);
             document.getElementById('bgMusic').play().catch(() => {});
             document.getElementById('startOverlay').style.opacity = '0';
             setTimeout(() => {
@@ -221,31 +257,60 @@
         }
 
         async function orchestrate() {
-            const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-            sun.style.top = '190%';
-            await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
-            await new Promise(r => setTimeout(r, 3500));
-            refl.style.opacity = '0';
-            document.getElementById('quoteDisplay').style.opacity = "0";
-            updateTheme('night');
-            document.getElementById('starField').style.opacity = "0.8";
-            moon.style.opacity = '1'; moon.style.top = '30%'; 
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 3000);
-            await new Promise(r => setTimeout(r, 2000));
-            await typeQuote("“And the moon rises to guard the quiet of the night.”");
-            await new Promise(r => setTimeout(r, 5000));
-            document.getElementById('quoteDisplay').style.opacity = "0";
-            moon.style.top = '190%'; moon.style.opacity = '0';
-            refl.style.opacity = '0';
-            updateTheme('dawn');
-            sun.style.transition = 'top 12s ease-out'; sun.style.top = '55%'; 
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
-            await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
-            await new Promise(r => setTimeout(r, 4000));
-            const final = document.getElementById('finalMessage');
-            final.style.display = 'flex';
-            setTimeout(() => final.style.opacity = '1', 100);
-        }
+    const sun = document.getElementById('sun'), 
+          moon = document.getElementById('moon'), 
+          refl = document.getElementById('reflection');
+
+    // Start with Sunset
+    sun.style.top = '190%'; 
+    await typeQuote("“A sunset is the sun’s fiery kiss to the night.”");
+    await new Promise(r => setTimeout(r, 3500));
+
+    // TRANSITION TO NIGHT
+    refl.style.opacity = '0';
+    document.getElementById('quoteDisplay').style.opacity = "0";
+    updateTheme('night');
+    document.getElementById('starField').style.opacity = "0.8";
+    
+    // Moon comes up
+    moon.style.opacity = '1'; 
+    moon.style.top = '30%'; 
+    setTimeout(() => { refl.style.opacity = '0.4'; }, 3000);
+    
+    await new Promise(r => setTimeout(r, 2000));
+    await typeQuote("“And the moon rises to guard the quiet of the night.”");
+    await new Promise(r => setTimeout(r, 5000));
+
+    // --- THE CRITICAL FIX START ---
+    document.getElementById('quoteDisplay').style.opacity = "0";
+    
+    // 1. Force the moon to start setting immediately
+    // We override the CSS transition briefly to make it move faster if needed
+    moon.style.transition = 'all 6s cubic-bezier(0.4, 0, 0.2, 1)'; 
+    moon.style.top = '190%'; 
+    moon.style.opacity = '0';
+    
+    // 2. Hide reflection during transition
+    refl.style.opacity = '0';
+
+    // 3. Start dawn theme AT THE SAME TIME the moon starts moving
+    updateTheme('dawn');
+
+    // 4. Bring the sun up
+    sun.style.transition = 'top 10s ease-out'; 
+    sun.style.top = '55%'; 
+    
+    // Bring back reflection once the sun is visible
+    setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
+    // --- THE CRITICAL FIX END ---
+
+    await typeQuote("“Until the sun returns with the promise of a new day.”", "#4a344e");
+    await new Promise(r => setTimeout(r, 4000));
+    
+    const final = document.getElementById('finalMessage');
+    final.style.display = 'flex';
+    setTimeout(() => final.style.opacity = '1', 100);
+}
 
         function startPhotoJourney() {
             document.getElementById('finalQuote').style.display = 'none';
@@ -307,7 +372,6 @@
                 if (Math.random() > 0.4) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    // Photos upscaled to 180px, upright, with a soft shadow
                     img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity: 0.5; filter: blur(0.2px); border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.3);";
                     h.appendChild(img);
                 } else {
