@@ -203,29 +203,36 @@ function beginMagic(isTest) {
                     clearInterval(timerInterval);
 
                     const updateCountdown = () => {
-                        const currentTime = new Date().getTime();
-                        const currentDiff = target - currentTime;
+    const currentTime = new Date().getTime();
+    const currentDiff = target - currentTime;
 
-                        if (currentDiff <= 0) {
-                            clearInterval(timerInterval);
-                            timerText.innerHTML = "It's time! Click again.";
-                            return;
-                        }
+    if (currentDiff <= 0) {
+        clearInterval(timerInterval);
+        timerText.innerHTML = "It's time! Click again. 🤍";
+        return;
+    }
 
-                        const days = Math.floor(currentDiff / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((currentDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const mins = Math.floor((currentDiff % (1000 * 60 * 60)) / (1000 * 60));
-                        const secs = Math.floor((currentDiff % (1000 * 60)) / 1000);
-                        
-                        let mainMsg = "Nice try, Ma'am! Haha.";
-                        if(clickCount === 2) mainMsg = "Wait ngani...";
-                        if(clickCount >= 3) mainMsg = "Ay excited yarn? wahahaha";
-                        if(clickCount >= 4) mainMsg = "Ipipilit tlaga? wahahaha";
-                        if(clickCount >= 5) mainMsg =  "Patience… it's worth the wait. :)";
+    const days = Math.floor(currentDiff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((currentDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((currentDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((currentDiff % (1000 * 60)) / 1000);
+    
+    // Set the text based on click count
+    let mainMsg = "Nice try, Ma'am! Wahaha.";
+    if(clickCount === 2) mainMsg = "Wait ngani...";
+    if(clickCount === 3) mainMsg = "Ay excited yarn? wahahaha";
+    if(clickCount === 4) mainMsg = "Ipipilit tlaga? wahahaha";
+    if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
 
-                        timerText.style.opacity = "1";
-                        timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
-                    };
+    timerText.style.opacity = "1";
+
+    // Only show the ticking timer if she has clicked 5 or more times
+    if (clickCount >= 5) {
+        timerText.innerHTML = `${mainMsg}<br><small style="font-size: 0.7rem; color: #ffcc00;">Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
+    } else {
+        timerText.innerHTML = mainMsg;
+    }
+};
 
                     updateCountdown();
                     timerInterval = setInterval(updateCountdown, 1000);
@@ -414,4 +421,5 @@ function beginMagic(isTest) {
     </script>
 </body>
 </html>
+
 
