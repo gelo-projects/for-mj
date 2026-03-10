@@ -224,10 +224,11 @@ function beginMagic(isTest) {
     if(clickCount === 4) mainMsg = "Ipipilit tlaga? wahahaha";
     if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
 
-    timerText.style.opacity = "1";
+    
 
     // Only show the ticking timer if she has clicked 5 or more times
     if (clickCount >= 5) {
+        timerText.style.opacity = "1";
         timerText.innerHTML = `${mainMsg}<br><small style="font-size: 0.7rem; color: #ffcc00;">Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
     } else {
         timerText.innerHTML = mainMsg;
@@ -421,5 +422,6 @@ function beginMagic(isTest) {
     </script>
 </body>
 </html>
+
 
 
