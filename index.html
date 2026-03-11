@@ -38,7 +38,7 @@
         
         .body { position: absolute; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 15; }
         .sun { width: 250px; height: 250px; background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s cubic-bezier(0.4, 0, 0.2, 1); }
-        .moon { width: 200px; height: 200px; background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 12s cubic-bezier(0.4, 0, 0.2, 1); }
+        .moon { width: 200px; height: 200px; background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 10s cubic-bezier(0.4, 0, 0.2, 1); }
 
         #textContainer { position: absolute; top: 35%; width: 100%; text-align: center; color: white; z-index: 30; pointer-events: none; padding: 0 10%; }
         .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.2rem; font-weight: 300; font-style: italic; }
@@ -47,12 +47,11 @@
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0.4; transition: opacity 4s; }
         .wave { width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; background-color: var(--curr-wave); }
         
-        .rock-left { animation: moveLeft 4s infinite ease-in-out; }
-        .rock-right { animation: moveRight 4s infinite ease-in-out; }
         @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
         @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
+        .rock-left { animation: moveLeft 4s infinite ease-in-out; }
+        .rock-right { animation: moveRight 4s infinite ease-in-out; }
 
-        /* SHOOTING STARS */
         .shooting-star {
             position: absolute;
             width: 2px;
@@ -73,15 +72,14 @@
             background: linear-gradient(to right, rgba(255,255,255,1), transparent);
         }
         @keyframes streak {
-    0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
-    10% { opacity: 1; }
-    90% { opacity: 1; }
-    100% { transform: rotate(-35deg) translateX(-1200px); opacity: 0; }
-}
+            0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: rotate(-35deg) translateX(-1200px); opacity: 0; }
+        }
 
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
-
         #heartContainer { display: grid; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; justify-content: center; display: none; }
         .photo { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; opacity: 0; transform: scale(3); transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease; }
         .photo.zoom-active { animation: zoomOutAction 1.5s forwards; }
@@ -89,8 +87,7 @@
         .big-center-photo { grid-area: 3 / 3 / 6 / 8; z-index: 10; border: 3px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-radius: 8px; }
 
         #finaleBanner { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; z-index: 600; pointer-events: none; transition: opacity 2s; text-align: center; width: 100%; }
-        #loveText { position: absolute; top: 52%; left: 50%; transform: translateX(-50%); text-align: center; color: #ff3366; font-size: 1.6rem; font-weight: 300; font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; }
-
+        #loveText { position: absolute; top: 52%; left: 50%; transform: translateX(-50%); text-align: center; color: #ff3366; font-size: 2.0rem; font-weight: 350; font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; }
         #endButtons { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 2s; z-index: 610; align-items: center; }
         .end-btn { border-color: #ff3366; color: #ff3366; font-weight: bold; width: 220px; }
 
@@ -154,16 +151,8 @@
     </div>
 
     <script>
-        let clickCount = 0;
-        let shootingStarTimer;
-        let timerInterval;
-
-        const heartShape = [
-            [0,1,1,0,0,0,1,1,0], [1,1,1,1,0,1,1,1,1], [1,1,0,0,0,0,0,1,1],
-            [1,1,0,0,0,0,0,1,1], [1,1,0,0,0,0,0,1,1], [0,1,1,1,1,1,1,1,0],
-            [0,0,1,1,1,1,1,0,0], [0,0,0,1,1,1,0,0,0], [0,0,0,0,1,0,0,0,0]
-        ];
-
+        let clickCount = 0, shootingStarTimer, timerInterval;
+        const heartShape = [[0,1,1,0,0,0,1,1,0],[1,1,1,1,0,1,1,1,1],[1,1,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,1,1],[0,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,0,0],[0,0,0,1,1,1,0,0,0],[0,0,0,0,1,0,0,0,0]];
         const photos = [];
         for(let i=1; i<=40; i++) photos.push(`photos/${i}.jpg`);
 
@@ -185,28 +174,19 @@
         }
 
         function createShootingStar() {
-    const sky = document.getElementById('sky');
-    // Spawning 2 to 3 stars per interval
-    const count = Math.floor(Math.random() * 2) + 2; 
-
-    for(let i = 0; i < count; i++) {
-        const star = document.createElement('div');
-        star.className = 'shooting-star';
-        
-        // Randomize start positions
-        star.style.left = (Math.random() * 100) + '%';
-        star.style.top = (Math.random() * 40) + '%';
-        
-        // SLOW SPEED: Changed to 3 to 5 seconds
-        const duration = 3.0 + Math.random() * 2.0;
-        star.style.animation = `streak ${duration}s linear forwards`;
-        
-        sky.appendChild(star);
-        
-        // Clean up after the animation ends (5000ms is the max duration)
-        setTimeout(() => star.remove(), 5500);
-    }
-}
+            const sky = document.getElementById('sky');
+            const count = Math.floor(Math.random() * 2) + 2; 
+            for(let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = (Math.random() * 100) + '%';
+                star.style.top = (Math.random() * 40) + '%';
+                const duration = 3.0 + Math.random() * 2.0; // Slow speed
+                star.style.animation = `streak ${duration}s linear forwards`;
+                sky.appendChild(star);
+                setTimeout(() => star.remove(), 5500);
+            }
+        }
 
         function beginMagic(isTest) {
             const target = new Date("March 19, 2026 00:00:00").getTime();
@@ -226,16 +206,11 @@
                         const cDiff = target - new Date().getTime();
                         if (cDiff <= 0) { location.reload(); return; }
                         const d = Math.floor(cDiff/864e5), h = Math.floor((cDiff%864e5)/36e5), m = Math.floor((cDiff%36e5)/6e4), s = Math.floor((cDiff%6e4)/1000);
-                        let msg = "Nice try, Ma'am! Wahaha.";
-                        if(clickCount === 2) msg = "Wait ngani...";
-                        if(clickCount === 3) msg = "Ay excited yarn? wahahaha";
-                        if(clickCount === 4) msg = "Ipipilit tlaga? wahahaha";
-                        if(clickCount >= 5) msg = "Patience… it's worth the wait. :)";
+                        let msg = clickCount >= 5 ? "Patience… worth the wait. :)" : "Ay excited yarn? wahahaha";
                         timerText.style.opacity = "1";
-                        timerText.innerHTML = (clickCount >= 5) ? `${msg}<br><small>Wait for: ${d}d ${h}h ${m}m ${s}s</small>` : msg;
+                        timerText.innerHTML = (clickCount >= 5) ? `${msg}<br><small>${d}d ${h}h ${m}m ${s}s</small>` : msg;
                     };
-                    updateCountdown();
-                    timerInterval = setInterval(updateCountdown, 1000);
+                    updateCountdown(); timerInterval = setInterval(updateCountdown, 1000);
                     return;
                 }
             }
@@ -265,15 +240,15 @@
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
 
+            // 1. SUNSET
             sun.style.top = '190%';
             await typeQuote("“Every sunset reminds me of you.”");
-            await new Promise(r => setTimeout(r, 3500));
+            await new Promise(r => setTimeout(r, 4000));
 
-            refl.style.opacity = '0';
+            // 2. NIGHT
             document.getElementById('quoteDisplay').style.opacity = "0";
             updateTheme('night');
             document.getElementById('starField').style.opacity = "0.8";
-            
             shootingStarTimer = setInterval(createShootingStar, 400);
 
             moon.style.opacity = '1'; moon.style.top = '30%'; 
@@ -281,40 +256,49 @@
             
             await new Promise(r => setTimeout(r, 3000));
             await typeQuote("“And every moonrise brings you to my thoughts.”");
-            await new Promise(r => setTimeout(r, 3000));
-
-            clearInterval(shootingStarTimer);
+            
+            // FADE MOON QUOTE AFTER APPEARANCE
+            await new Promise(r => setTimeout(r, 4000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
-            moon.style.transition = 'all 6s cubic-bezier(0.4, 0, 0.2, 1)'; 
+
+            // LONG NIGHT FOR STARS
+            await new Promise(r => setTimeout(r, 15000)); 
+
+            // 3. SUNRISE TRANSITION (Moon Descents First)
+            clearInterval(shootingStarTimer); 
+            moon.style.transition = 'all 10s cubic-bezier(0.4, 0, 0.2, 1)'; 
             moon.style.top = '190%'; moon.style.opacity = '0';
             refl.style.opacity = '0';
 
-            updateTheme('dawn');
-            sun.style.transition = 'top 10s ease-out'; 
-            sun.style.top = '55%'; 
-            document.getElementById('sunGlow').style.opacity = "1";
+            // Change background AFTER moon starts descending
+            setTimeout(() => {
+                updateTheme('dawn');
+                sun.style.transition = 'top 12s ease-out'; 
+                sun.style.top = '55%'; 
+                document.getElementById('sunGlow').style.opacity = "1";
 
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
-            await typeQuote("“And every sunrise reminds me how lucky I am to know you.”", "#4a344e");
-            await new Promise(r => setTimeout(r, 4000));
+                // Sync Sunrise Quote
+                setTimeout(async () => {
+                    await typeQuote("“And every sunrise makes life brighter with you in it.”", "#4a344e");
+                    await new Promise(r => setTimeout(r, 4000));
+                    document.getElementById('quoteDisplay').style.opacity = "0";
+                    await new Promise(r => setTimeout(r, 1500));
+                    await typeQuote("“And some people make every day feel a little brighter.”", "#4a344e");
+                    await new Promise(r => setTimeout(r, 5000));
+                    const final = document.getElementById('finalMessage');
+                    final.style.display = 'flex';
+                    setTimeout(() => final.style.opacity = '1', 100);
+                }, 6000);
 
-            document.getElementById('quoteDisplay').style.opacity = "0";
-            await new Promise(r => setTimeout(r, 1200));
-            await typeQuote("“And somehow, the days feel a lot better with you in them.”", "#4a344e");
-            await new Promise(r => setTimeout(r, 4200));
-
-            const final = document.getElementById('finalMessage');
-            final.style.display = 'flex';
-            setTimeout(() => final.style.opacity = '1', 100);
+                setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
+            }, 4000);
         }
 
         function startPhotoJourney() {
             document.getElementById('finalQuote').style.display = 'none';
             document.getElementById('triggerHeart').style.display = 'none';
             const container = document.getElementById('heartContainer');
-            container.style.display = 'grid';
-            container.innerHTML = ""; 
-            
+            container.style.display = 'grid'; container.innerHTML = ""; 
             let bigImg = document.createElement("img");
             bigImg.src = "photos/family_big.jpg";
             bigImg.className = "photo big-center-photo";
@@ -324,16 +308,14 @@
             let pIdx = 0;
             heartShape.forEach((row, rIdx) => {
                 row.forEach((cell, cIdx) => {
-                    const isCenter = (rIdx >= 2 && rIdx <= 4 && cIdx >= 2 && cIdx <= 6);
-                    if(cell === 1 && !isCenter) {
+                    if(cell === 1 && !(rIdx >= 2 && rIdx <= 4 && cIdx >= 2 && cIdx <= 6)) {
                         let div = document.createElement("div");
                         div.style.gridArea = `${rIdx + 1} / ${cIdx + 1}`;
                         let img = document.createElement("img");
                         img.src = photos[pIdx % photos.length];
                         img.className = "photo";
                         img.style.animationDelay = (pIdx * 0.2) + "s";
-                        div.appendChild(img);
-                        container.appendChild(div);
+                        div.appendChild(img); container.appendChild(div);
                         setTimeout(() => img.classList.add('zoom-active'), 50);
                         pIdx++;
                     }
@@ -346,8 +328,7 @@
             document.getElementById('bgMusic').pause();
             document.getElementById('videoSection').style.display = 'flex';
             const vid = document.getElementById('greetingVideo');
-            vid.play();
-            vid.onended = showFinale;
+            vid.play(); vid.onended = showFinale;
         }
 
         function showFinale() {
@@ -357,24 +338,19 @@
             document.getElementById('finaleBanner').style.opacity = '1';
             document.getElementById('loveText').style.opacity = '1';
             const b = document.getElementById('endButtons');
-            b.style.display = 'flex';
-            setTimeout(() => b.style.opacity = '1', 500);
+            b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
             setInterval(() => {
                 const h = document.createElement("div");
                 h.className = "floating-obj";
                 if (Math.random() > 0.4) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity: 0.7; border: 2px solid white;";
+                    img.style.cssText = "width:160px; height:160px; object-fit:cover; border-radius:15px; opacity:0.6; border:2px solid white;";
                     h.appendChild(img);
-                } else {
-                    h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = (30 + Math.random()*30)+"px";
-                }
-                h.style.left = Math.random()*100 + "vw";
-                h.style.bottom = "-200px";
+                } else { h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = (30 + Math.random()*30)+"px"; }
+                h.style.left = Math.random()*100 + "vw"; h.style.bottom = "-200px";
                 h.style.animationDuration = (6 + Math.random()*4)+"s";
-                document.body.appendChild(h);
-                setTimeout(() => h.remove(), 10000);
+                document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
             }, 500);
         }
 
