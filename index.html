@@ -189,40 +189,58 @@
         }
 
         function beginMagic(isTest) {
-            const target = new Date("March 19, 2026 00:00:00").getTime();
-            if(isTest) {
-                const password = prompt("Enter developer password:");
-                if (password !== "mysafeplace") { alert("Access Denied."); return; }
-            } else {
-                const now = new Date().getTime();
-                if (target - now > 0) {
-                    clickCount++;
-                    const btn = document.getElementById('openBtn');
-                    const timerText = document.getElementById('timer');
-                    btn.classList.add('shake');
-                    setTimeout(() => btn.classList.remove('shake'), 500);
-                    clearInterval(timerInterval);
-                    const updateCountdown = () => {
-                        const cDiff = target - new Date().getTime();
-                        if (cDiff <= 0) { location.reload(); return; }
-                        const d = Math.floor(cDiff/864e5), h = Math.floor((cDiff%864e5)/36e5), m = Math.floor((cDiff%36e5)/6e4), s = Math.floor((cDiff%6e4)/1000);
-                        let msg = clickCount >= 5 ? "Patience… worth the wait. :)" : "Ay excited yarn? wahahaha";
-                        timerText.style.opacity = "1";
-                        timerText.innerHTML = (clickCount >= 5) ? `${msg}<br><small>${d}d ${h}h ${m}m ${s}s</small>` : msg;
-                    };
-                    updateCountdown(); timerInterval = setInterval(updateCountdown, 1000);
-                    return;
-                }
-            }
+    const target = new Date("March 19, 2026 00:00:00").getTime();
+    if(isTest) {
+        const password = prompt("Enter developer password:");
+        if (password !== "mysafeplace") { alert("Access Denied."); return; }
+    } else {
+        const now = new Date().getTime();
+        if (target - now > 0) {
+            clickCount++;
+            const btn = document.getElementById('openBtn');
+            const timerText = document.getElementById('timer');
+            
+            btn.classList.add('shake');
+            setTimeout(() => btn.classList.remove('shake'), 500);
+            
             clearInterval(timerInterval);
-            document.getElementById('bgMusic').play().catch(() => {});
-            document.getElementById('startOverlay').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('startOverlay').style.display = 'none';
-                document.getElementById('world').style.opacity = '1';
-                orchestrate();
-            }, 1000);
+            
+            const updateCountdown = () => {
+                const cDiff = target - new Date().getTime();
+                if (cDiff <= 0) { location.reload(); return; }
+                
+                const d = Math.floor(cDiff/864e5), 
+                      h = Math.floor((cDiff%864e5)/36e5), 
+                      m = Math.floor((cDiff%36e5)/6e4), 
+                      s = Math.floor((cDiff%6e4)/1000);
+                
+                // RESTORED MESSAGES
+                let mainMsg = "Nice try, Ma'am! Wahaha.";
+                if(clickCount === 2) mainMsg = "Wait ngani...";
+                if(clickCount === 3) mainMsg = "Ay excited yarn? wahahaha";
+                if(clickCount === 4) mainMsg = "Ipipilit tlaga? wahahaha";
+                if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
+
+                timerText.style.opacity = "1";
+                timerText.innerHTML = `${mainMsg}<br><small>${d}d ${h}h ${m}m ${s}s</small>`;
+            };
+            
+            updateCountdown(); 
+            timerInterval = setInterval(updateCountdown, 1000);
+            return;
         }
+    }
+    
+    // Proceed with the magic if time is up or test is successful
+    clearInterval(timerInterval);
+    document.getElementById('bgMusic').play().catch(() => {});
+    document.getElementById('startOverlay').style.opacity = '0';
+    setTimeout(() => {
+        document.getElementById('startOverlay').style.display = 'none';
+        document.getElementById('world').style.opacity = '1';
+        orchestrate();
+    }, 1000);
+}
 
         async function typeQuote(text, color = "white") {
             const display = document.getElementById('quoteDisplay');
@@ -382,4 +400,5 @@
     </script>
 </body>
 </html>
+
 
