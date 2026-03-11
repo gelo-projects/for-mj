@@ -190,31 +190,42 @@
 
         function beginMagic(isTest) {
     const target = new Date("March 19, 2026 00:00:00").getTime();
+    
     if(isTest) {
         const password = prompt("Enter developer password:");
-        if (password !== "mysafeplace") { alert("Access Denied."); return; }
+        if (password !== "mysafeplace") {
+            alert("Access Denied.");
+            return;
+        }
     } else {
         const now = new Date().getTime();
-        if (target - now > 0) {
+        const diff = target - now;
+        
+        if (diff > 0) {
             clickCount++;
             const btn = document.getElementById('openBtn');
             const timerText = document.getElementById('timer');
             
             btn.classList.add('shake');
             setTimeout(() => btn.classList.remove('shake'), 500);
-            
+
             clearInterval(timerInterval);
-            
+
             const updateCountdown = () => {
-                const cDiff = target - new Date().getTime();
-                if (cDiff <= 0) { location.reload(); return; }
+                const currentTime = new Date().getTime();
+                const currentDiff = target - currentTime;
+
+                if (currentDiff <= 0) {
+                    clearInterval(timerInterval);
+                    timerText.innerHTML = "It's time! Click again. 🤍";
+                    return;
+                }
+
+                const days = Math.floor(currentDiff / (864e5));
+                const hours = Math.floor((currentDiff % 864e5) / 36e5);
+                const mins = Math.floor((currentDiff % 36e5) / 6e4);
+                const secs = Math.floor((currentDiff % 6e4) / 1000);
                 
-                const d = Math.floor(cDiff/864e5), 
-                      h = Math.floor((cDiff%864e5)/36e5), 
-                      m = Math.floor((cDiff%36e5)/6e4), 
-                      s = Math.floor((cDiff%6e4)/1000);
-                
-                // RESTORED MESSAGES
                 let mainMsg = "Nice try, Ma'am! Wahaha.";
                 if(clickCount === 2) mainMsg = "Wait ngani...";
                 if(clickCount === 3) mainMsg = "Ay excited yarn? wahahaha";
@@ -222,10 +233,17 @@
                 if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
 
                 timerText.style.opacity = "1";
-                timerText.innerHTML = `${mainMsg}<br><small>${d}d ${h}h ${m}m ${s}s</small>`;
+
+                // THE FIX: Explicitly check clickCount here
+                if (clickCount >= 5) {
+                    timerText.innerHTML = `${mainMsg}<br><small>Wait for: ${days}d ${hours}h ${mins}m ${secs}s</small>`;
+                } else {
+                    // This prevents the "Wait for:" part from being added
+                    timerText.innerHTML = mainMsg;
+                }
             };
-            
-            updateCountdown(); 
+
+            updateCountdown();
             timerInterval = setInterval(updateCountdown, 1000);
             return;
         }
@@ -400,5 +418,6 @@
     </script>
 </body>
 </html>
+
 
 
