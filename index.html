@@ -52,25 +52,8 @@
         .rock-left { animation: moveLeft 4s infinite ease-in-out; }
         .rock-right { animation: moveRight 4s infinite ease-in-out; }
 
-        .shooting-star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: #fff;
-            border-radius: 50%;
-            z-index: 999;
-            pointer-events: none;
-        }
-        .shooting-star::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            width: 80px;
-            height: 1px;
-            background: linear-gradient(to right, rgba(255,255,255,1), transparent);
-        }
+        .shooting-star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; z-index: 999; pointer-events: none; }
+        .shooting-star::after { content: ""; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 80px; height: 1px; background: linear-gradient(to right, rgba(255,255,255,1), transparent); }
         @keyframes streak {
             0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
             10% { opacity: 1; }
@@ -93,9 +76,18 @@
 
         #videoSection { position: fixed; inset: 0; background: black; display: none; justify-content: center; align-items: center; z-index: 3000; }
         #videoSection video { max-width: 90%; max-height: 80vh; border-radius: 12px; }
-        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; }
+        
+        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; transition: transform 0.3s; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
+        /* THE PULSE EFFECT */
+        .pulse-once { animation: pulseOnce 0.4s ease-out forwards !important; }
+        @keyframes pulseOnce {
+            0% { transform: scale(1); }
+            50% { transform: scale(2.5); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
         .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; display: flex; align-items: center; justify-content: center; }
         @keyframes flyUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.3; } 100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } }
 
@@ -136,7 +128,7 @@
 
             I hope you like this surprise pa ba to? wahahaha
         </div>
-        <div class="heart-icon" id="triggerHeart" onclick="startPhotoJourney()">❤</div>
+        <div class="heart-icon" id="triggerHeart" onclick="handleHeartPulse()">❤</div>
         <div id="heartContainer"></div>
         <div id="finaleBanner">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
         <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
@@ -182,7 +174,7 @@
                 star.className = 'shooting-star';
                 star.style.left = (Math.random() * 100) + '%';
                 star.style.top = (Math.random() * 40) + '%';
-                const duration = 3.0 + Math.random() * 2.0; // Slow speed
+                const duration = 3.0 + Math.random() * 2.0; 
                 star.style.animation = `streak ${duration}s linear forwards`;
                 sky.appendChild(star);
                 setTimeout(() => star.remove(), 5500);
@@ -190,76 +182,35 @@
         }
 
         function beginMagic(isTest) {
-    const target = new Date("March 19, 2026 00:00:00").getTime();
-    
-    if(isTest) {
-        const password = prompt("Enter developer password:");
-        if (password !== "mysafeplace") {
-            alert("Access Denied.");
-            return;
-        }
-    } else {
-        const now = new Date().getTime();
-        const diff = target - now;
-        
-        if (diff > 0) {
-            clickCount++;
-            const btn = document.getElementById('openBtn');
-            const timerText = document.getElementById('timer');
-            
-            btn.classList.add('shake');
-            setTimeout(() => btn.classList.remove('shake'), 500);
-
-            clearInterval(timerInterval);
-
-            const updateCountdown = () => {
-                const currentTime = new Date().getTime();
-                const currentDiff = target - currentTime;
-
-                if (currentDiff <= 0) {
+            const target = new Date("March 19, 2026 00:00:00").getTime();
+            if(isTest) {
+                const password = prompt("Enter developer password:");
+                if (password !== "mysafeplace") { alert("Access Denied."); return; }
+            } else {
+                const now = new Date().getTime();
+                if (target - now > 0) {
+                    clickCount++;
+                    const btn = document.getElementById('openBtn');
+                    const timerText = document.getElementById('timer');
+                    btn.classList.add('shake');
+                    setTimeout(() => btn.classList.remove('shake'), 500);
                     clearInterval(timerInterval);
-                    timerText.innerHTML = "It's time! Click again. 🤍";
-                    return;
+                    const updateCountdown = () => {
+                        const currentDiff = target - new Date().getTime();
+                        if (currentDiff <= 0) { clearInterval(timerInterval); timerText.innerHTML = "It's time! Click again. 🤍"; return; }
+                        const days = Math.floor(currentDiff / 864e5), hours = Math.floor((currentDiff % 864e5) / 36e5), mins = Math.floor((currentDiff % 36e5) / 6e4), secs = Math.floor((currentDiff % 6e4) / 1000);
+                        let mainMsg = clickCount >= 5 ? "Patience… it's worth the wait. :)" : (clickCount === 2 ? "Wait ngani..." : (clickCount === 3 ? "Ay excited yarn? wahahaha" : (clickCount === 4 ? "Ipipilit tlaga? wahahaha" : "Nice try, Ma'am! Wahaha.")));
+                        timerText.style.opacity = "1";
+                        timerText.innerHTML = clickCount >= 5 ? `${mainMsg}<br><small>${days}d ${hours}h ${mins}m ${secs}s na lang wahahaha</small>` : mainMsg;
+                    };
+                    updateCountdown(); timerInterval = setInterval(updateCountdown, 1000); return;
                 }
-
-                const days = Math.floor(currentDiff / (864e5));
-                const hours = Math.floor((currentDiff % 864e5) / 36e5);
-                const mins = Math.floor((currentDiff % 36e5) / 6e4);
-                const secs = Math.floor((currentDiff % 6e4) / 1000);
-                
-                let mainMsg = "Nice try, Ma'am! Wahaha.";
-                if(clickCount === 2) mainMsg = "Wait ngani...";
-                if(clickCount === 3) mainMsg = "Ay excited yarn? wahahaha";
-                if(clickCount === 4) mainMsg = "Ipipilit tlaga? wahahaha";
-                if(clickCount >= 5) mainMsg = "Patience… it's worth the wait. :)";
-
-                timerText.style.opacity = "1";
-
-                // THE FIX: Explicitly check clickCount here
-                if (clickCount >= 5) {
-                    timerText.innerHTML = `${mainMsg}<br><small>${days}d ${hours}h ${mins}m ${secs}s na lang wahahaha</small>`;
-                } else {
-                    // This prevents the "Wait for:" part from being added
-                    timerText.innerHTML = mainMsg;
-                }
-            };
-
-            updateCountdown();
-            timerInterval = setInterval(updateCountdown, 1000);
-            return;
+            }
+            clearInterval(timerInterval);
+            document.getElementById('bgMusic').play().catch(() => {});
+            document.getElementById('startOverlay').style.opacity = '0';
+            setTimeout(() => { document.getElementById('startOverlay').style.display = 'none'; document.getElementById('world').style.opacity = '1'; orchestrate(); }, 1000);
         }
-    }
-    
-    // Proceed with the magic if time is up or test is successful
-    clearInterval(timerInterval);
-    document.getElementById('bgMusic').play().catch(() => {});
-    document.getElementById('startOverlay').style.opacity = '0';
-    setTimeout(() => {
-        document.getElementById('startOverlay').style.display = 'none';
-        document.getElementById('world').style.opacity = '1';
-        orchestrate();
-    }, 1000);
-}
 
         async function typeQuote(text, color = "white") {
             const display = document.getElementById('quoteDisplay');
@@ -276,43 +227,24 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-
-            // 1. SUNSET: Fade reflection out
-            sun.style.top = '190%';
-            refl.style.transition = 'opacity 5s ease';
-            refl.style.opacity = '0'; 
+            sun.style.top = '190%'; refl.style.transition = 'opacity 5s ease'; refl.style.opacity = '0'; 
             await typeQuote("“Every sunset reminds me of you.”");
             await new Promise(r => setTimeout(r, 4000));
-
-            // 2. NIGHT: Moonrise reflection return
             document.getElementById('quoteDisplay').style.opacity = "0";
-            updateTheme('night');
-            document.getElementById('starField').style.opacity = "0.8";
+            updateTheme('night'); document.getElementById('starField').style.opacity = "0.8";
             shootingStarTimer = setInterval(createShootingStar, 400);
-
-            moon.style.opacity = '1'; 
-            moon.style.top = '30%'; 
-            setTimeout(() => { 
-                refl.style.opacity = '0.4'; 
-                refl.style.transition = 'opacity 5s ease-in';
-            }, 1000); 
-
+            moon.style.opacity = '1'; moon.style.top = '30%'; 
+            setTimeout(() => { refl.style.opacity = '0.4'; refl.style.transition = 'opacity 5s ease-in'; }, 1000); 
             await new Promise(r => setTimeout(r, 3000));
             await typeQuote("“And every moonrise brings you to my thoughts.”");
             await new Promise(r => setTimeout(r, 4000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
             await new Promise(r => setTimeout(r, 6000)); 
-
-            // 3. SUNRISE TRANSITION
             clearInterval(shootingStarTimer); 
             moon.style.transition = 'all 10s cubic-bezier(0.4, 0, 0.2, 1)'; 
-            moon.style.top = '190%'; moon.style.opacity = '0';
-            refl.style.opacity = '0';
-
+            moon.style.top = '190%'; moon.style.opacity = '0'; refl.style.opacity = '0';
             setTimeout(() => {
-                updateTheme('dawn');
-                sun.style.transition = 'top 12s ease-out'; 
-                sun.style.top = '55%'; 
+                updateTheme('dawn'); sun.style.transition = 'top 12s ease-out'; sun.style.top = '55%'; 
                 document.getElementById('sunGlow').style.opacity = "1";
                 setTimeout(async () => {
                     await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
@@ -322,11 +254,18 @@
                     await typeQuote("“And somehow, the days feel a lot better with you in them.”", "#4a344e");
                     await new Promise(r => setTimeout(r, 5000));
                     const final = document.getElementById('finalMessage');
-                    final.style.display = 'flex';
-                    setTimeout(() => final.style.opacity = '1', 100);
+                    final.style.display = 'flex'; setTimeout(() => final.style.opacity = '1', 100);
                 }, 6000);
                 setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
             }, 4000);
+        }
+
+        function handleHeartPulse() {
+            const heart = document.getElementById('triggerHeart');
+            heart.classList.add('pulse-once');
+            setTimeout(() => {
+                startPhotoJourney();
+            }, 450); // Slight delay so the pulse finishes before the screen changes
         }
 
         function startPhotoJourney() {
@@ -339,7 +278,6 @@
             bigImg.className = "photo big-center-photo";
             container.appendChild(bigImg);
             setTimeout(() => bigImg.classList.add('zoom-active'), 1500);
-
             let pIdx = 0;
             heartShape.forEach((row, rIdx) => {
                 row.forEach((cell, cIdx) => {
@@ -417,7 +355,3 @@
     </script>
 </body>
 </html>
-
-
-
-
