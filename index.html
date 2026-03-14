@@ -18,6 +18,15 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', serif; }
         
+        .heart-burst {
+            position: absolute; color: #ff4d6d; font-size: 18px; pointer-events: none;
+            animation: heartBurst 1s ease-out forwards; z-index: 1000;
+        }
+        @keyframes heartBurst {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1.5); opacity: 0; }
+        }
+
         #startOverlay {
             position: fixed; inset: 0; background: #020111; z-index: 5000; 
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -32,16 +41,9 @@
         #testBtn { position: absolute; bottom: 20px; font-size: 0.6rem; opacity: 0.2; color: white; text-decoration: underline; background: none; border: none; cursor: pointer; }
 
         .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
-        
-        .sky { 
-            height: 60vh; 
-            background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); 
-            position: relative; 
-            overflow: hidden; 
-            transition: background var(--ultra-smooth); 
-            z-index: 10; 
-        }
+        .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: background var(--ultra-smooth); z-index: 10; }
 
+        #wishText { position: absolute; top: 20%; width: 100%; text-align: center; font-size: 1.4rem; color: white; opacity: 0; transition: opacity 1.5s; z-index: 40; pointer-events: none; }
         #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 8s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -53,36 +55,16 @@
         #textContainer { position: absolute; top: 35%; width: 100%; text-align: center; color: white; z-index: 30; pointer-events: none; padding: 0 10%; }
         .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.2rem; font-weight: 300; font-style: italic; }
 
-        .ocean { 
-            height: 40vh; 
-            background: var(--curr-ocean); 
-            position: relative; 
-            overflow: hidden; 
-            z-index: 5; 
-            transition: background var(--ultra-smooth); 
-        }
-
+        .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: background var(--ultra-smooth); }
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0.4; transition: opacity 4s; }
-        
-        /* Moving Reflection */
-        .wave { 
-            width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; 
-            background-color: var(--curr-wave); transition: background-color var(--ultra-smooth); 
-        }
+        .wave { width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; background-color: var(--curr-wave); transition: background-color var(--ultra-smooth); }
         .rock-left { animation: moveLeft 4s infinite ease-in-out; }
         .rock-right { animation: moveRight 4s infinite ease-in-out; }
         @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
         @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
 
-        /* Visible Shooting Stars */
-        .shooting-star { 
-            position: absolute; width: 3px; height: 3px; background: #fff; 
-            border-radius: 50%; z-index: 12; pointer-events: none; opacity: 0;
-        }
-        .shooting-star::after { 
-            content: ""; position: absolute; top: 50%; left: 0; transform: translateY(-50%); 
-            width: 120px; height: 1px; background: linear-gradient(to right, rgba(255,255,255,1), transparent); 
-        }
+        .shooting-star { position: absolute; width: 3px; height: 3px; background: #fff; border-radius: 50%; z-index: 12; pointer-events: none; opacity: 0; }
+        .shooting-star::after { content: ""; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 120px; height: 1px; background: linear-gradient(to right, rgba(255,255,255,1), transparent); }
         @keyframes streak {
             0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
             10% { opacity: 1; }
@@ -92,21 +74,26 @@
 
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
+        
+        /* Updated Positioning for the Finale elements */
+        #finaleGroup { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; z-index: 600; }
+        #finaleBanner { color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; cursor: pointer; transition: opacity 1s; display: block; margin-bottom: 5px; }
+        #secretFinal { font-size: 0.95rem; color: #ff4d6d; opacity: 0; transition: opacity 2s; font-style: italic; display: block; height: 1.2rem; }
+        #loveText { margin-top: 15px; color: #ff3366; font-size: 1.8rem; font-weight: 350; font-style: italic; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
+
         #heartContainer { display: grid; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; justify-content: center; display: none; }
         .photo { width: 100%; height: 100%; object-fit: cover; border-radius: 5px; opacity: 0; transform: scale(3); transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 1s ease; }
         .photo.zoom-active { animation: zoomOutAction 1.5s forwards; }
         @keyframes zoomOutAction { 0% { transform: scale(3); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .big-center-photo { grid-area: 3 / 3 / 6 / 8; z-index: 10; border: 3px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.4); border-radius: 8px; }
 
-        #finaleBanner { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; z-index: 600; pointer-events: none; transition: opacity 2s; text-align: center; width: 100%; }
-        #loveText { position: absolute; top: 52%; left: 50%; transform: translateX(-50%); text-align: center; color: #ff3366; font-size: 2.0rem; font-weight: 350; font-style: italic; opacity: 0; transition: opacity 2s ease; z-index: 600; width: 100%; }
-        #endButtons { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; gap: 15px; opacity: 0; transition: opacity 2s; z-index: 610; align-items: center; }
+        #endButtons { position: absolute; bottom: 8%; left: 50%; transform: translateX(-50%); display: none; flex-direction: column; gap: 10px; opacity: 0; transition: opacity 2s; z-index: 610; align-items: center; }
         .end-btn { border-color: #ff3366; color: #ff3366; font-weight: bold; width: 220px; }
 
         #videoSection { position: fixed; inset: 0; background: black; display: none; justify-content: center; align-items: center; z-index: 3000; }
         #videoSection video { max-width: 90%; max-height: 80vh; border-radius: 12px; }
         
-        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; }
+        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; position: relative; z-index: 210; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
         .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; }
@@ -129,12 +116,13 @@
     </div>
 
     <div class="world" id="world">
-        <div class="sky" id="sky">
+        <div class="sky" id="sky" onclick="handleSkyClick(event)">
             <div id="starField"></div>
             <div class="body sun" id="sun"></div>
             <div class="sun-glow" id="sunGlow"></div>
             <div class="body moon" id="moon"></div>
             <div id="textContainer"><div id="quoteDisplay"></div></div>
+            <div id="wishText">Make a wish ✨</div>
         </div>
         <div class="ocean" id="ocean"><div class="reflection-layer" id="reflection"></div></div>
     </div>
@@ -150,10 +138,16 @@
 
             I hope you like this surprise pa ba to? wahahaha
         </div>
-        <div class="heart-icon" id="triggerHeart" onclick="handleHeartPulse()">❤</div>
+        <div class="heart-icon" id="triggerHeart" onclick="handleHeartPulse(event)">❤</div>
+        
         <div id="heartContainer"></div>
-        <div id="finaleBanner">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
-        <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
+
+        <div id="finaleGroup">
+            <div id="finaleBanner" onclick="revealSecret(event)">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
+            <div id="secretFinal">And I'm really glad you're part of my life.</div>
+            <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
+        </div>
+
         <div id="endButtons">
             <button class="btn end-btn" onclick="replaySurprise()">Watch Again</button>
             <button class="btn end-btn" onclick="resetJourney()">Start the Journey Again</button>
@@ -166,7 +160,7 @@
     </div>
 
     <script>
-        let clickCount = 0, shootingStarTimer, timerInterval;
+        let clickCount = 0, shootingStarTimer, timerInterval, isNight = false, secretShown = false;
         const heartShape = [[0,1,1,0,0,0,1,1,0],[1,1,1,1,0,1,1,1,1],[1,1,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,1,1],[1,1,0,0,0,0,0,1,1],[0,1,1,1,1,1,1,1,0],[0,0,1,1,1,1,1,0,0],[0,0,0,1,1,1,0,0,0],[0,0,0,0,1,0,0,0,0]];
         const photos = [];
         for(let i=1; i<=40; i++) photos.push(`photos/${i}.jpg`);
@@ -189,25 +183,58 @@
             }
         }
 
+        function createHeartBurst(x, y) {
+            for(let i=0;i<12;i++){
+                const h=document.createElement("div");
+                h.className="heart-burst";
+                h.innerHTML="❤";
+                const angle=Math.random()*360;
+                const dist=80+Math.random()*60;
+                const dx=Math.cos(angle*Math.PI/180)*dist+"px";
+                const dy=Math.sin(angle*Math.PI/180)*dist+"px";
+                h.style.left=x+"px"; h.style.top=y+"px";
+                h.style.setProperty("--x",dx); h.style.setProperty("--y",dy);
+                document.body.appendChild(h);
+                setTimeout(()=>h.remove(),1000);
+            }
+        }
+
+        function handleSkyClick(e) {
+            createHeartBurst(e.clientX, e.clientY);
+            if(isNight) {
+                const wish = document.getElementById('wishText');
+                wish.style.opacity = "1";
+                setTimeout(() => wish.style.opacity = "0", 4000);
+            }
+        }
+
+        function revealSecret(e) {
+            createHeartBurst(e.clientX, e.clientY);
+            if(!secretShown) {
+                secretShown = true;
+                document.getElementById('secretFinal').style.opacity = "1";
+            }
+        }
+
         function createShootingStar() {
             const sky = document.getElementById('sky');
-            const count = Math.floor(Math.random() * 2) + 2; 
+            const count = Math.floor(Math.random() * 2) + 1; 
             for(let i = 0; i < count; i++) {
                 const star = document.createElement('div');
                 star.className = 'shooting-star';
                 star.style.left = (Math.random() * 100) + '%';
                 star.style.top = (Math.random() * 40) + '%';
-                const duration = 3.0 + Math.random() * 2.0; 
+                const duration = 2.5 + Math.random() * 1.5; 
                 star.style.animation = `streak ${duration}s linear forwards`;
                 sky.appendChild(star);
-                setTimeout(() => star.remove(), 5500);
+                setTimeout(() => star.remove(), 4500);
             }
         }
 
         function beginMagic(isTest) {
             const intro = document.getElementById('introMusic');
             intro.play().catch(() => {}); 
-            const target = new Date("March 19, 2026 00:00:00").getTime();
+            const target = new Date("March 19, 2026 20:00:00").getTime();
             
             if(!isTest) {
                 const now = new Date().getTime();
@@ -222,7 +249,7 @@
                         const currentDiff = target - new Date().getTime();
                         if (currentDiff <= 0) { clearInterval(timerInterval); timerText.innerHTML = "It's time! Click again. 🤍"; return; }
                         const days = Math.floor(currentDiff / 864e5), hours = Math.floor((currentDiff % 864e5) / 36e5), mins = Math.floor((currentDiff % 36e5) / 6e4), secs = Math.floor((currentDiff % 6e4) / 1000);
-                        let mainMsg = clickCount >= 5 ? "Patience… malapit na! :D" : (clickCount === 2 ? "Wait ngani..." : (clickCount === 3 ? "Ay excited yarn? wahahaha" : (clickCount === 4 ? "Ipipilit tlaga? wahahaha" : "Nice try, Ma'am! Wahaha.")));
+                        let mainMsg = clickCount >= 5 ? "Patience… malapit na! :D" : (clickCount === 2 ? "Wait ngani..." : (clickCount === 3 ? "Ay excited yarn? wahahaha" : (clickCount === 4 ? "Ipipilit tlaga? wahahaha" : "Nice try, Ma'am! Wahaha.")) );
                         timerText.style.opacity = "1";
                         timerText.innerHTML = clickCount >= 5 ? `${mainMsg}<br><small>${days}d ${hours}h ${mins}m ${secs}s na lang wahahaha</small>` : mainMsg;
                     };
@@ -260,18 +287,17 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-            
-            sun.style.top = '190%'; 
-            refl.style.opacity = '0'; 
+            sun.style.top = '190%'; refl.style.opacity = '0'; 
             await typeQuote("“Every sunset reminds me of you.”");
             await new Promise(r => setTimeout(r, 4000));
             document.getElementById('quoteDisplay').style.opacity = "0";
             
             await new Promise(r => setTimeout(r, 2000));
-            updateTheme('night'); // Shift during rise
-            moon.style.opacity = '1'; moon.style.top = '30%'; 
+            updateTheme('night'); 
+            isNight = true;
+            moon.style.opacity = '1'; moon.style.top = '40%'; 
             document.getElementById('starField').style.opacity = "0.8";
-            shootingStarTimer = setInterval(createShootingStar, 400);
+            shootingStarTimer = setInterval(createShootingStar, 600);
             
             setTimeout(() => { refl.style.opacity = '0.4'; }, 3000); 
             await new Promise(r => setTimeout(r, 4000));
@@ -280,13 +306,13 @@
             await new Promise(r => setTimeout(r, 7000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
             clearInterval(shootingStarTimer); 
+            isNight = false;
 
             moon.style.top = '190%'; moon.style.opacity = '0'; refl.style.opacity = '0';
             await new Promise(r => setTimeout(r, 6000));
 
-            updateTheme('dawn'); // Shift during rise
-            sun.style.transition = 'top 10s ease-in-out'; 
-            sun.style.top = '55%'; 
+            updateTheme('dawn'); 
+            sun.style.transition = 'top 10s ease-in-out'; sun.style.top = '55%'; 
             document.getElementById('sunGlow').style.opacity = "1";
             
             setTimeout(async () => {
@@ -299,14 +325,14 @@
                 const final = document.getElementById('finalMessage');
                 final.style.display = 'flex'; setTimeout(() => final.style.opacity = '1', 100);
             }, 4000);
-
             setTimeout(() => { refl.style.opacity = '0.4'; }, 8000);
         }
 
-        function handleHeartPulse() {
+        function handleHeartPulse(event) {
+            createHeartBurst(event.clientX, event.clientY);
             const heart = document.getElementById('triggerHeart');
             heart.style.transform = "scale(2.5)"; heart.style.opacity = "0";
-            setTimeout(() => { startPhotoJourney(); }, 500);
+            setTimeout(() => { startPhotoJourney(); }, 700);
         }
 
         function startPhotoJourney() {
