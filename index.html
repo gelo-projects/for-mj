@@ -9,9 +9,10 @@
             --s-top: #ff4500; --s-mid: #ff8c00; --s-bot: #ffcc00; --s-ocean: #4a1c00; --s-wave: #ffcc00;
             --n-top: #020111; --n-mid: #050a30; --n-bot: #191970; --n-ocean: #0a0e29; --n-wave: #ffffff;
             --d-top: #ffafbd; --d-mid: #ffc3a0; --d-bot: #fff5f5; --d-ocean: #ffc3a0; --d-wave: #ffffff;
+            
             --curr-t: var(--s-top); --curr-m: var(--s-mid); --curr-b: var(--s-bot);
             --curr-ocean: var(--s-ocean); --curr-wave: var(--s-wave);
-            --ultra-smooth: 8s cubic-bezier(0.4, 0, 0.2, 1);
+            --ultra-smooth: 12s ease-in-out;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,34 +32,62 @@
         #testBtn { position: absolute; bottom: 20px; font-size: 0.6rem; opacity: 0.2; color: white; text-decoration: underline; background: none; border: none; cursor: pointer; }
 
         .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
-        .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: var(--ultra-smooth); z-index: 10; }
-        #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 5s ease; pointer-events: none; }
+        
+        .sky { 
+            height: 60vh; 
+            background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); 
+            position: relative; 
+            overflow: hidden; 
+            transition: background var(--ultra-smooth); 
+            z-index: 10; 
+        }
+
+        #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 8s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
         
         .body { position: absolute; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 15; }
-        .sun { width: 250px; height: 250px; background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s cubic-bezier(0.4, 0, 0.2, 1); }
-        .moon { width: 200px; height: 200px; background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 10s cubic-bezier(0.4, 0, 0.2, 1); }
+        .sun { width: 250px; height: 250px; background: radial-gradient(circle, #fff 10%, #ffcc00 40%, #ff8c00 100%); box-shadow: 0 0 80px #ff8c00; top: 60%; transition: top 15s ease-in-out; }
+        .moon { width: 200px; height: 200px; background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 12s ease-in-out; }
 
         #textContainer { position: absolute; top: 35%; width: 100%; text-align: center; color: white; z-index: 30; pointer-events: none; padding: 0 10%; }
         .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.2rem; font-weight: 300; font-style: italic; }
 
-        .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: var(--ultra-smooth); }
+        .ocean { 
+            height: 40vh; 
+            background: var(--curr-ocean); 
+            position: relative; 
+            overflow: hidden; 
+            z-index: 5; 
+            transition: background var(--ultra-smooth); 
+        }
+
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0.4; transition: opacity 4s; }
-        .wave { width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; background-color: var(--curr-wave); }
         
-        @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
-        @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
+        /* Moving Reflection */
+        .wave { 
+            width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; 
+            background-color: var(--curr-wave); transition: background-color var(--ultra-smooth); 
+        }
         .rock-left { animation: moveLeft 4s infinite ease-in-out; }
         .rock-right { animation: moveRight 4s infinite ease-in-out; }
+        @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
+        @keyframes moveRight { 0%, 100% { transform: translateX(20px); } 50% { transform: translateX(-20px); } }
 
-        .shooting-star { position: absolute; width: 2px; height: 2px; background: #fff; border-radius: 50%; z-index: 999; pointer-events: none; }
-        .shooting-star::after { content: ""; position: absolute; top: 50%; left: 0; transform: translateY(-50%); width: 80px; height: 1px; background: linear-gradient(to right, rgba(255,255,255,1), transparent); }
+        /* Visible Shooting Stars */
+        .shooting-star { 
+            position: absolute; width: 3px; height: 3px; background: #fff; 
+            border-radius: 50%; z-index: 12; pointer-events: none; opacity: 0;
+        }
+        .shooting-star::after { 
+            content: ""; position: absolute; top: 50%; left: 0; transform: translateY(-50%); 
+            width: 120px; height: 1px; background: linear-gradient(to right, rgba(255,255,255,1), transparent); 
+        }
         @keyframes streak {
             0% { transform: rotate(-35deg) translateX(0); opacity: 0; }
             10% { opacity: 1; }
             90% { opacity: 1; }
-            100% { transform: rotate(-35deg) translateX(-1200px); opacity: 0; }
+            100% { transform: rotate(-35deg) translateX(-1500px); opacity: 0; }
         }
 
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
@@ -77,25 +106,18 @@
         #videoSection { position: fixed; inset: 0; background: black; display: none; justify-content: center; align-items: center; z-index: 3000; }
         #videoSection video { max-width: 90%; max-height: 80vh; border-radius: 12px; }
         
-        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; transition: transform 0.3s; }
+        .heart-icon { color: #ff3333; font-size: 3rem; animation: beat 1.5s infinite; cursor: pointer; margin: 10px; }
         @keyframes beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
         
-        /* THE PULSE EFFECT */
-        .pulse-once { animation: pulseOnce 0.4s ease-out forwards !important; }
-        @keyframes pulseOnce {
-            0% { transform: scale(1); }
-            50% { transform: scale(2.5); opacity: 0.7; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; display: flex; align-items: center; justify-content: center; }
-        @keyframes flyUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.5; } 85% { opacity: 0.3; } 100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } }
+        .floating-obj { position: absolute; animation: flyUp 7s linear forwards; z-index: 550; pointer-events: none; }
+        @keyframes flyUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.5; } 100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } }
 
         .sun-glow { position: absolute; left: 50%; top: 60%; transform: translate(-50%, -50%); width: 600px; height: 300px; background: radial-gradient(circle, rgba(255,200,120,0.6) 0%, rgba(255,200,120,0.2) 40%, transparent 70%); opacity: 0; transition: opacity 4s ease; pointer-events: none; }
     </style>
 </head>
 <body onload="initVisuals()">
 
+    <audio id="introMusic" loop preload="auto"><source src="intro_waiting.mp3" type="audio/mpeg"></audio>
     <audio id="bgMusic" loop preload="auto"><source src="magic.mp3" type="audio/mpeg"></audio>
     <audio id="personalSong" loop preload="auto"><source src="personal_song.mp3" type="audio/mpeg"></audio>
 
@@ -161,7 +183,8 @@
             for(let i=0; i<25; i++) {
                 const w = document.createElement('div');
                 w.className = `wave ${Math.random() > 0.5 ? 'rock-left' : 'rock-right'}`;
-                w.style.animationDelay = `${Math.random()*4}s`;
+                w.style.animationDelay = `${Math.random() * 4}s`;
+                w.style.opacity = (0.2 + Math.random() * 0.5).toString();
                 reflections.appendChild(w);
             }
         }
@@ -182,11 +205,11 @@
         }
 
         function beginMagic(isTest) {
-            const target = new Date("March 19, 2026 00:00:00").getTime();
-            if(isTest) {
-                const password = prompt("Enter developer password:");
-                if (password !== "mysafeplace") { alert("Access Denied."); return; }
-            } else {
+            const intro = document.getElementById('introMusic');
+            intro.play().catch(() => {}); 
+            const target = new Date("March 14, 2026 20:00:00").getTime();
+            
+            if(!isTest) {
                 const now = new Date().getTime();
                 if (target - now > 0) {
                     clickCount++;
@@ -199,17 +222,27 @@
                         const currentDiff = target - new Date().getTime();
                         if (currentDiff <= 0) { clearInterval(timerInterval); timerText.innerHTML = "It's time! Click again. 🤍"; return; }
                         const days = Math.floor(currentDiff / 864e5), hours = Math.floor((currentDiff % 864e5) / 36e5), mins = Math.floor((currentDiff % 36e5) / 6e4), secs = Math.floor((currentDiff % 6e4) / 1000);
-                        let mainMsg = clickCount >= 5 ? "Patience… it's worth the wait. :)" : (clickCount === 2 ? "Wait ngani..." : (clickCount === 3 ? "Ay excited yarn? wahahaha" : (clickCount === 4 ? "Ipipilit tlaga? wahahaha" : "Nice try, Ma'am! Wahaha.")));
+                        let mainMsg = clickCount >= 5 ? "Patience… malapit na! :D" : (clickCount === 2 ? "Wait ngani..." : (clickCount === 3 ? "Ay excited yarn? wahahaha" : (clickCount === 4 ? "Ipipilit tlaga? wahahaha" : "Nice try, Ma'am! Wahaha.")));
                         timerText.style.opacity = "1";
                         timerText.innerHTML = clickCount >= 5 ? `${mainMsg}<br><small>${days}d ${hours}h ${mins}m ${secs}s na lang wahahaha</small>` : mainMsg;
                     };
                     updateCountdown(); timerInterval = setInterval(updateCountdown, 1000); return;
                 }
+                const userPass = prompt("Eyy, may password pala wahaha");
+                if (userPass !== "finallytrustingagain") { alert("mali wahahaha"); return; }
+            } else {
+                const devPass = prompt("Dev Access:");
+                if (devPass !== "mysafeplace") return;
             }
-            clearInterval(timerInterval);
-            document.getElementById('bgMusic').play().catch(() => {});
+            
+            intro.pause();
+            document.getElementById('bgMusic').play();
             document.getElementById('startOverlay').style.opacity = '0';
-            setTimeout(() => { document.getElementById('startOverlay').style.display = 'none'; document.getElementById('world').style.opacity = '1'; orchestrate(); }, 1000);
+            setTimeout(() => { 
+                document.getElementById('startOverlay').style.display = 'none'; 
+                document.getElementById('world').style.opacity = '1'; 
+                orchestrate(); 
+            }, 1000);
         }
 
         async function typeQuote(text, color = "white") {
@@ -227,57 +260,66 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-            sun.style.top = '190%'; refl.style.transition = 'opacity 5s ease'; refl.style.opacity = '0'; 
+            
+            sun.style.top = '190%'; 
+            refl.style.opacity = '0'; 
             await typeQuote("“Every sunset reminds me of you.”");
             await new Promise(r => setTimeout(r, 4000));
             document.getElementById('quoteDisplay').style.opacity = "0";
-            updateTheme('night'); document.getElementById('starField').style.opacity = "0.8";
-            shootingStarTimer = setInterval(createShootingStar, 400);
+            
+            await new Promise(r => setTimeout(r, 2000));
+            updateTheme('night'); // Shift during rise
             moon.style.opacity = '1'; moon.style.top = '30%'; 
-            setTimeout(() => { refl.style.opacity = '0.4'; refl.style.transition = 'opacity 5s ease-in'; }, 1000); 
-            await new Promise(r => setTimeout(r, 3000));
+            document.getElementById('starField').style.opacity = "0.8";
+            shootingStarTimer = setInterval(createShootingStar, 400);
+            
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 3000); 
+            await new Promise(r => setTimeout(r, 4000));
             await typeQuote("“And every moonrise brings you to my thoughts.”");
-            await new Promise(r => setTimeout(r, 4000)); 
+            
+            await new Promise(r => setTimeout(r, 7000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
-            await new Promise(r => setTimeout(r, 6000)); 
             clearInterval(shootingStarTimer); 
-            moon.style.transition = 'all 10s cubic-bezier(0.4, 0, 0.2, 1)'; 
+
             moon.style.top = '190%'; moon.style.opacity = '0'; refl.style.opacity = '0';
-            setTimeout(() => {
-                updateTheme('dawn'); sun.style.transition = 'top 12s ease-out'; sun.style.top = '55%'; 
-                document.getElementById('sunGlow').style.opacity = "1";
-                setTimeout(async () => {
-                    await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
-                    await new Promise(r => setTimeout(r, 4000));
-                    document.getElementById('quoteDisplay').style.opacity = "0";
-                    await new Promise(r => setTimeout(r, 1500));
-                    await typeQuote("“And somehow, the days feel a lot better with you in them.”", "#4a344e");
-                    await new Promise(r => setTimeout(r, 5000));
-                    const final = document.getElementById('finalMessage');
-                    final.style.display = 'flex'; setTimeout(() => final.style.opacity = '1', 100);
-                }, 6000);
-                setTimeout(() => { refl.style.opacity = '0.4'; }, 5000);
+            await new Promise(r => setTimeout(r, 6000));
+
+            updateTheme('dawn'); // Shift during rise
+            sun.style.transition = 'top 10s ease-in-out'; 
+            sun.style.top = '55%'; 
+            document.getElementById('sunGlow').style.opacity = "1";
+            
+            setTimeout(async () => {
+                await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
+                await new Promise(r => setTimeout(r, 5000));
+                document.getElementById('quoteDisplay').style.opacity = "0";
+                await new Promise(r => setTimeout(r, 2000));
+                await typeQuote("“And somehow, the days feel a lot better with you in them.”", "#4a344e");
+                await new Promise(r => setTimeout(r, 5000));
+                const final = document.getElementById('finalMessage');
+                final.style.display = 'flex'; setTimeout(() => final.style.opacity = '1', 100);
             }, 4000);
+
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 8000);
         }
 
         function handleHeartPulse() {
             const heart = document.getElementById('triggerHeart');
-            heart.classList.add('pulse-once');
-            setTimeout(() => {
-                startPhotoJourney();
-            }, 450); // Slight delay so the pulse finishes before the screen changes
+            heart.style.transform = "scale(2.5)"; heart.style.opacity = "0";
+            setTimeout(() => { startPhotoJourney(); }, 500);
         }
 
         function startPhotoJourney() {
             document.getElementById('finalQuote').style.display = 'none';
             document.getElementById('triggerHeart').style.display = 'none';
             const container = document.getElementById('heartContainer');
-            container.style.display = 'grid'; container.innerHTML = ""; 
+            container.style.display = 'grid';
             let bigImg = document.createElement("img");
             bigImg.src = "photos/family_big.jpg";
             bigImg.className = "photo big-center-photo";
             container.appendChild(bigImg);
             setTimeout(() => bigImg.classList.add('zoom-active'), 1500);
+            
             let pIdx = 0;
             heartShape.forEach((row, rIdx) => {
                 row.forEach((cell, cIdx) => {
@@ -287,14 +329,13 @@
                         let img = document.createElement("img");
                         img.src = photos[pIdx % photos.length];
                         img.className = "photo";
-                        img.style.animationDelay = (pIdx * 0.2) + "s";
                         div.appendChild(img); container.appendChild(div);
-                        setTimeout(() => img.classList.add('zoom-active'), 50);
+                        setTimeout(() => img.classList.add('zoom-active'), pIdx * 150);
                         pIdx++;
                     }
                 });
             });
-            setTimeout(playBirthdayVideo, (pIdx * 200) + 8000);
+            setTimeout(playBirthdayVideo, (pIdx * 150) + 7000);
         }
 
         function playBirthdayVideo() {
@@ -307,41 +348,29 @@
         function showFinale() {
             document.getElementById('videoSection').style.display = 'none';
             document.getElementById('personalSong').play();
-            document.getElementById('heartContainer').style.opacity = '0.1';
+            document.getElementById('heartContainer').style.opacity = '0.15';
             document.getElementById('finaleBanner').style.opacity = '1';
             document.getElementById('loveText').style.opacity = '1';
             const b = document.getElementById('endButtons');
             b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
+            
             setInterval(() => {
                 const h = document.createElement("div");
                 h.className = "floating-obj";
-                if (Math.random() > 0.4) {
+                if (Math.random() > 0.5) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:160px; height:160px; object-fit:cover; border-radius:15px; opacity:0.6; border:2px solid white;";
+                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:10px; opacity:0.6; border:2px solid white;";
                     h.appendChild(img);
-                } else { h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = (30 + Math.random()*30)+"px"; }
-                h.style.left = Math.random()*100 + "vw"; h.style.bottom = "-200px";
-                h.style.animationDuration = (6 + Math.random()*4)+"s";
+                } else { h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = "25px"; }
+                h.style.left = Math.random()*100 + "vw"; h.style.bottom = "-100px";
+                h.style.animationDuration = (5 + Math.random()*5)+"s";
                 document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
-            }, 500);
+            }, 600);
         }
 
-        function replaySurprise() {
-            const song = document.getElementById('personalSong');
-            if (song) song.volume = 0.3;
-            document.getElementById('videoSection').style.display = 'flex';
-            const vid = document.getElementById('greetingVideo');
-            vid.currentTime = 0; vid.play();
-        }
-
-        function closeVideo() { 
-            const song = document.getElementById('personalSong');
-            if (song) song.volume = 1.0;
-            document.getElementById('greetingVideo').pause();
-            showFinale(); 
-        }
-
+        function closeVideo() { document.getElementById('greetingVideo').pause(); showFinale(); }
+        function replaySurprise() { document.getElementById('videoSection').style.display = 'flex'; document.getElementById('greetingVideo').play(); }
         function resetJourney() { location.reload(); }
 
         function updateTheme(mode) {
