@@ -43,7 +43,20 @@
         .world { position: relative; width: 100%; height: 100dvh; display: flex; flex-direction: column; opacity: 0; transition: opacity 2s; }
         .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: background var(--ultra-smooth); z-index: 10; }
 
-        #wishText { position: absolute; top: 20%; width: 100%; text-align: center; font-size: 1.4rem; color: white; opacity: 0; transition: opacity 1.5s; z-index: 40; pointer-events: none; }
+        #wishText { 
+    position: absolute; 
+    bottom: 10%; /* Moves it to the bottom area */
+    width: 100%; 
+    text-align: center; 
+    font-style: italic;
+    font-size: 0.8rem; /* Slightly smaller for a "secret" feel */
+    color: white; 
+    opacity: 0; 
+    transition: opacity 1.5s; 
+    z-index: 40; 
+    pointer-events: none;
+    text-shadow: 0 0 10px rgba(0,0,0,0.5); /* Makes it readable against the water/sun */
+}
         #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 8s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -53,7 +66,7 @@
         .moon { width: 200px; height: 200px; background: #fdfdfd; box-shadow: 0 0 60px rgba(255,255,255,0.8); top: 180%; opacity: 0; transition: all 12s ease-in-out; }
 
         #textContainer { position: absolute; top: 35%; width: 100%; text-align: center; color: white; z-index: 30; pointer-events: none; padding: 0 10%; }
-        .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.2rem; font-weight: 300; font-style: italic; }
+        .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.4rem; font-weight: 300; font-style: italic; }
 
         .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: background var(--ultra-smooth); }
         .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0; transition: opacity 3s ease; }
@@ -122,7 +135,7 @@
             <div class="sun-glow" id="sunGlow"></div>
             <div class="body moon" id="moon"></div>
             <div id="textContainer"><div id="quoteDisplay"></div></div>
-            <div id="wishText">Make a wish ✨</div>
+            <div id="wishText"></div>
         </div>
         <div class="ocean" id="ocean"><div class="reflection-layer" id="reflection"></div></div>
     </div>
@@ -202,14 +215,27 @@
             }
         }
 
-        function handleSkyClick(e) {
-            createHeartBurst(e.clientX, e.clientY);
-            if(isNight) {
-                const wish = document.getElementById('wishText');
-                wish.style.opacity = "1";
-                setTimeout(() => wish.style.opacity = "0", 4000);
-            }
+        // 1. Update the Sky Click logic to handle your Easter eggs
+function handleSkyClick(e) {
+    createHeartBurst(e.clientX, e.clientY);
+    const wish = document.getElementById('wishText');
+    
+    // Check current state for specific messages
+    if (isNight) {
+        wish.innerHTML = "I love you more than you'll ever see :)";
+    } else {
+        // Check CSS variable to see if we are in Dawn or Sunset
+        const currentTheme = document.documentElement.style.getPropertyValue('--curr-t');
+        if (currentTheme.includes('--d-top')) {
+            wish.innerHTML = "More than my heart could ever show :)";
+        } else {
+            wish.innerHTML = "I love you more than you'll ever know :)";
         }
+    }
+
+    wish.style.opacity = "30%";
+    setTimeout(() => { wish.style.opacity = "0"; }, 4000);
+}
 
         function revealSecret(e) {
             createHeartBurst(e.clientX, e.clientY);
@@ -258,8 +284,8 @@
                     };
                     updateCountdown(); timerInterval = setInterval(updateCountdown, 1000); return;
                 }
-                const userPass = prompt("Eyy, may password pala wahaha");
-                if (userPass !== "finallytrustingagain") { alert("mali wahahaha"); return; }
+                const userPass = prompt("Eyy, alam mo na yung password");
+                if (userPass !== "finallytrustingagain") { alert("ayun lang! mali wahahaha"); return; }
             } else {
                 const devPass = prompt("Dev Access:");
                 if (devPass !== "mysafeplace") return;
@@ -299,7 +325,7 @@
             sun.style.top = '190%'; 
             
             // Fade out reflection as sun disappears
-            setTimeout(() => { refl.style.opacity = '0'; }, 5000);
+            setTimeout(() => { refl.style.opacity = '0'; }, 8000);
 
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
@@ -325,8 +351,8 @@
             clearInterval(shootingStarTimer); 
             isNight = false;
             moon.style.top = '190%'; moon.style.opacity = '0'; 
-            //refl.style.opacity = '0'; // Hide reflection for transition
-            setTimeout(() => { refl.style.opacity = '0'; }, 3000);
+            refl.style.opacity = '0'; // Hide reflection for transition
+            
             await new Promise(r => setTimeout(r, 6000));
 
             // 4. Dawn Transition
@@ -336,7 +362,7 @@
             document.getElementById('sunGlow').style.opacity = "1";
             
             // Wait for sun to actually appear before showing reflection
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 4000);
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 8000);
 
             setTimeout(async () => {
                 await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
@@ -417,8 +443,27 @@
             }, 600);
         }
 
-        function closeVideo() { document.getElementById('greetingVideo').pause(); showFinale(); }
-        function replaySurprise() { document.getElementById('videoSection').style.display = 'flex'; document.getElementById('greetingVideo').play(); }
+        function closeVideo() {
+    const personalSong = document.getElementById('personalSong');
+    personalSong.volume = 1.0; // Back to 100%
+    
+    document.getElementById('greetingVideo').pause();
+    document.getElementById('videoSection').style.display = 'none';
+    showFinale(); 
+}
+        function replaySurprise() {
+    const personalSong = document.getElementById('personalSong');
+    personalSong.volume = 0.2; // Drop to 20%
+    
+    document.getElementById('videoSection').style.display = 'flex';
+    const vid = document.getElementById('greetingVideo');
+    vid.play();
+    
+    // When video ends, bring volume back up
+    vid.onended = () => {
+        closeVideo();
+    };
+}
         function resetJourney() { location.reload(); }
 
         function updateTheme(mode) {
