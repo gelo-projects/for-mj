@@ -45,17 +45,18 @@
 
         #wishText { 
     position: absolute; 
-    bottom: 10%; /* Moves it to the bottom area */
+    bottom: 8%;           /* Lower down, closer to the edge */
     width: 100%; 
     text-align: center; 
-    font-style: italic;
-    font-size: 0.8rem; /* Slightly smaller for a "secret" feel */
+    font-size: 0.85rem;    /* Smaller, more delicate font */
+    letter-spacing: 1px;
     color: white; 
     opacity: 0; 
-    transition: opacity 1.5s; 
+    transition: opacity 2.5s ease; /* Slower fade in/out makes it feel subtle */
     z-index: 40; 
     pointer-events: none;
-    text-shadow: 0 0 10px rgba(0,0,0,0.5); /* Makes it readable against the water/sun */
+    font-style: italic;
+    filter: blur(0.5px);   /* Slight blur makes it blend into the atmosphere */
 }
         #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 8s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
@@ -220,21 +221,28 @@ function handleSkyClick(e) {
     createHeartBurst(e.clientX, e.clientY);
     const wish = document.getElementById('wishText');
     
-    // Check current state for specific messages
+    const currentTheme = document.documentElement.style.getPropertyValue('--curr-t');
+    const isDawn = currentTheme.includes('--d-top');
+
+    // Set message based on time of day
     if (isNight) {
-        wish.innerHTML = "I love you more than you'll ever see :)";
+        wish.innerHTML = "I love you more than you'll ever see";
+        wish.style.color = "white";
+    } else if (isDawn) {
+        wish.innerHTML = "More than my heart could ever show";
+        wish.style.color = "#4a344e"; // Darker color for the bright dawn
     } else {
-        // Check CSS variable to see if we are in Dawn or Sunset
-        const currentTheme = document.documentElement.style.getPropertyValue('--curr-t');
-        if (currentTheme.includes('--d-top')) {
-            wish.innerHTML = "More than my heart could ever show :)";
-        } else {
-            wish.innerHTML = "I love you more than you'll ever know :)";
-        }
+        wish.innerHTML = "I love you more than you'll ever know";
+        wish.style.color = "white";
     }
 
-    wish.style.opacity = "30%";
-    setTimeout(() => { wish.style.opacity = "0"; }, 4000);
+    // Only fade in to 30% opacity so it's barely there
+    wish.style.opacity = "0.3"; 
+    
+    // Keep it for a bit, then fade away slowly
+    setTimeout(() => { 
+        wish.style.opacity = "0"; 
+    }, 3000);
 }
 
         function revealSecret(e) {
