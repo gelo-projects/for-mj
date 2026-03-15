@@ -56,8 +56,9 @@
         .quote-letter { display: inline-block; opacity: 0; transition: opacity 0.5s ease; font-size: 1.2rem; font-weight: 300; font-style: italic; }
 
         .ocean { height: 40vh; background: var(--curr-ocean); position: relative; overflow: hidden; z-index: 5; transition: background var(--ultra-smooth); }
-        .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0.4; transition: opacity 4s; }
-        .wave { width: 140px; height: 2px; margin: 12px 0; border-radius: 20px; background-color: var(--curr-wave); transition: background-color var(--ultra-smooth); }
+        .reflection-layer { position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; display: flex; flex-direction: column; align-items: center; padding-top: 20px; opacity: 0; transition: opacity 3s ease; }
+        
+        .wave { height: 2px; margin: 12px 0; border-radius: 20px; background-color: var(--curr-wave); transition: background-color var(--ultra-smooth); filter: blur(1px); box-shadow: 0 0 5px var(--curr-wave); }
         .rock-left { animation: moveLeft 4s infinite ease-in-out; }
         .rock-right { animation: moveRight 4s infinite ease-in-out; }
         @keyframes moveLeft { 0%, 100% { transform: translateX(-20px); } 50% { transform: translateX(20px); } }
@@ -75,7 +76,6 @@
         #finalMessage { position: fixed; inset: 0; display: none; flex-direction: column; justify-content: center; align-items: center; opacity: 0; z-index: 100; background: #fff9f0; transition: opacity 3s; padding: 20px; text-align: center; }
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
         
-        /* Updated Positioning for the Finale elements */
         #finaleGroup { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; z-index: 600; }
         #finaleBanner { color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; cursor: pointer; transition: opacity 1s; display: block; margin-bottom: 5px; }
         #secretFinal { font-size: 0.95rem; color: #ff4d6d; opacity: 0; transition: opacity 2s; font-style: italic; display: block; height: 1.2rem; }
@@ -139,13 +139,12 @@
             I hope you like this surprise pa ba to? wahahaha
         </div>
         <div class="heart-icon" id="triggerHeart" onclick="handleHeartPulse(event)">❤</div>
-        
         <div id="heartContainer"></div>
 
         <div id="finaleGroup">
             <div id="finaleBanner" onclick="revealSecret(event)">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
-            <div id="secretFinal">And I'm really glad you're part of my life.</div>
             <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
+            <div id="secretFinal">And I'm really glad you're part of my life.</div>
         </div>
 
         <div id="endButtons">
@@ -173,12 +172,16 @@
                 s.style.cssText = `left:${Math.random()*100}%; top:${Math.random()*100}%; width:2px; height:2px; --t:${2+Math.random()*3}s;`;
                 stars.appendChild(s);
             }
+            
             const reflections = document.getElementById('reflection');
+            const widths = [40, 110, 250, 110]; 
             for(let i=0; i<25; i++) {
                 const w = document.createElement('div');
                 w.className = `wave ${Math.random() > 0.5 ? 'rock-left' : 'rock-right'}`;
                 w.style.animationDelay = `${Math.random() * 4}s`;
                 w.style.opacity = (0.2 + Math.random() * 0.5).toString();
+                const widthValue = widths[i % widths.length];
+                w.style.width = `${widthValue}px`;
                 reflections.appendChild(w);
             }
         }
@@ -234,7 +237,7 @@
         function beginMagic(isTest) {
             const intro = document.getElementById('introMusic');
             intro.play().catch(() => {}); 
-            const target = new Date("March 19, 2026 20:00:00").getTime();
+            const target = new Date("March 19, 2026 00:00:00").getTime();
             
             if(!isTest) {
                 const now = new Date().getTime();
@@ -287,11 +290,21 @@
 
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
-            sun.style.top = '190%'; refl.style.opacity = '0'; 
+            
+            // 1. Initial Sunset
+            refl.style.opacity = '0.4'; // Show reflection immediately for existing sun
             await typeQuote("“Every sunset reminds me of you.”");
-            await new Promise(r => setTimeout(r, 4000));
+            
+            await new Promise(r => setTimeout(r, 2000));
+            sun.style.top = '190%'; 
+            
+            // Fade out reflection as sun disappears
+            setTimeout(() => { refl.style.opacity = '0'; }, 5000);
+
+            await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
             
+            // 2. Night Transition
             await new Promise(r => setTimeout(r, 2000));
             updateTheme('night'); 
             isNight = true;
@@ -299,22 +312,32 @@
             document.getElementById('starField').style.opacity = "0.8";
             shootingStarTimer = setInterval(createShootingStar, 600);
             
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 3000); 
+            // DELAY moon reflection until it's actually up in the sky
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 5000); 
+
             await new Promise(r => setTimeout(r, 4000));
             await typeQuote("“And every moonrise brings you to my thoughts.”");
             
             await new Promise(r => setTimeout(r, 7000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
+            
+            // 3. Preparation for Dawn
             clearInterval(shootingStarTimer); 
             isNight = false;
-
-            moon.style.top = '190%'; moon.style.opacity = '0'; refl.style.opacity = '0';
+            moon.style.top = '190%'; moon.style.opacity = '0'; 
+            //refl.style.opacity = '0'; // Hide reflection for transition
+            setTimeout(() => { refl.style.opacity = '0'; }, 3000);
             await new Promise(r => setTimeout(r, 6000));
 
+            // 4. Dawn Transition
             updateTheme('dawn'); 
-            sun.style.transition = 'top 10s ease-in-out'; sun.style.top = '55%'; 
+            sun.style.transition = 'top 10s ease-in-out'; 
+            sun.style.top = '55%'; 
             document.getElementById('sunGlow').style.opacity = "1";
             
+            // Wait for sun to actually appear before showing reflection
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 4000);
+
             setTimeout(async () => {
                 await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
                 await new Promise(r => setTimeout(r, 5000));
@@ -325,7 +348,6 @@
                 const final = document.getElementById('finalMessage');
                 final.style.display = 'flex'; setTimeout(() => final.style.opacity = '1', 100);
             }, 4000);
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 8000);
         }
 
         function handleHeartPulse(event) {
@@ -386,7 +408,7 @@
                 if (Math.random() > 0.5) {
                     const img = document.createElement("img");
                     img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:10px; opacity:0.6; border:2px solid white;";
+                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:10px; opacity:0.7; border:2px solid white;";
                     h.appendChild(img);
                 } else { h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = "25px"; }
                 h.style.left = Math.random()*100 + "vw"; h.style.bottom = "-100px";
