@@ -333,7 +333,7 @@ function handleSkyClick(e) {
             sun.style.top = '190%'; 
             
             // Fade out reflection as sun disappears
-            setTimeout(() => { refl.style.opacity = '0'; }, 8000);
+            setTimeout(() => { refl.style.opacity = '0'; }, 7000);
 
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
@@ -361,7 +361,7 @@ function handleSkyClick(e) {
             moon.style.top = '190%'; moon.style.opacity = '0'; 
             refl.style.opacity = '0'; // Hide reflection for transition
             
-            await new Promise(r => setTimeout(r, 6000));
+            await new Promise(r => setTimeout(r, 10000));
 
             // 4. Dawn Transition
             updateTheme('dawn'); 
@@ -370,7 +370,7 @@ function handleSkyClick(e) {
             document.getElementById('sunGlow').style.opacity = "1";
             
             // Wait for sun to actually appear before showing reflection
-            setTimeout(() => { refl.style.opacity = '0.4'; }, 8000);
+            setTimeout(() => { refl.style.opacity = '0.4'; }, 6000);
 
             setTimeout(async () => {
                 await typeQuote("“And every sunrise reminds me how lucky I am to have you in my life.”", "#4a344e");
@@ -428,28 +428,55 @@ function handleSkyClick(e) {
         }
 
         function showFinale() {
-            document.getElementById('videoSection').style.display = 'none';
-            document.getElementById('personalSong').play();
-            document.getElementById('heartContainer').style.opacity = '0.15';
-            document.getElementById('finaleBanner').style.opacity = '1';
-            document.getElementById('loveText').style.opacity = '1';
-            const b = document.getElementById('endButtons');
-            b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
-            
-            setInterval(() => {
-                const h = document.createElement("div");
-                h.className = "floating-obj";
-                if (Math.random() > 0.5) {
-                    const img = document.createElement("img");
-                    img.src = photos[Math.floor(Math.random() * photos.length)];
-                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:10px; opacity:0.7; border:2px solid white;";
-                    h.appendChild(img);
-                } else { h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = "25px"; }
-                h.style.left = Math.random()*100 + "vw"; h.style.bottom = "-100px";
-                h.style.animationDuration = (5 + Math.random()*5)+"s";
-                document.body.appendChild(h); setTimeout(() => h.remove(), 10000);
-            }, 600);
+    document.getElementById('videoSection').style.display = 'none';
+    const personalSong = document.getElementById('personalSong');
+    personalSong.volume = 1.0; // Ensure volume is back up
+    personalSong.play();
+    
+    document.getElementById('heartContainer').style.opacity = '0.15';
+    document.getElementById('finaleBanner').style.opacity = '1';
+    document.getElementById('loveText').style.opacity = '1';
+    const b = document.getElementById('endButtons');
+    b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
+    
+    // Define your Stitch emoji filenames here
+    // List your GIF filenames here
+    const stitchGifs = ['stitch1.gif', 'stitch2.gif', 'stitch3.gif']; 
+
+    setInterval(() => {
+        const h = document.createElement("div");
+        h.className = "floating-obj";
+        
+        const roll = Math.random();
+        
+        if (roll > 0.6) { 
+            // 40% chance: Memory Photo
+            const img = document.createElement("img");
+            img.src = photos[Math.floor(Math.random() * photos.length)];
+            img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity:0.8; border:2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);";
+            h.appendChild(img);
+        } else if (roll > 0.2) { 
+            // 30% chance: ANIMATED STITCH GIF
+            const stitch = document.createElement("img");
+            // Adjust the path 'emojis/' to wherever you saved them
+            stitch.src = `emojis/${stitchGifs[Math.floor(Math.random() * stitchGifs.length)]}`;
+            stitch.style.cssText = "width:80px; height:auto; filter: drop-shadow(0 0 8px #82eeff);";
+            h.appendChild(stitch);
+        } else { 
+            // 30% chance: Only Red Hearts (Blue heart removed)
+            h.innerHTML = "❤"; 
+            h.style.color = "#ff4d6d"; 
+            h.style.fontSize = "28px";
+            h.style.textShadow = "0 0 10px rgba(255,255,255,0.3)";
         }
+
+        h.style.left = Math.random()*90 + "vw"; // Keep them slightly away from the very edge
+        h.style.bottom = "-120px";
+        h.style.animationDuration = (6 + Math.random()*4) + "s"; // Slightly slower for better visibility
+        document.body.appendChild(h); 
+        setTimeout(() => h.remove(), 10000);
+    }, 700); // Slightly increased interval so the screen doesn't get too crowde
+}
 
         function closeVideo() {
     const personalSong = document.getElementById('personalSong');
