@@ -168,7 +168,12 @@
     </div>
 
     <div id="videoSection">
-        <video id="greetingVideo"><source src="video.mp4" type="video/mp4"></video>
+        <video id="greetingVideo" 
+       src="https://www.dropbox.com/scl/fi/5rtm6v89nd35tdkgk2goa/video.mp4?rlkey=x5jctjkhpfr55qwdw2n93kuze&st=oxkxg6pc&raw=1" 
+       playsinline 
+       webkit-playsinline 
+       preload="auto">
+</video>
         <button class="btn" style="position: absolute; bottom: 30px; border-color:white;" onclick="closeVideo()">Close</button>
     </div>
 
@@ -478,23 +483,26 @@ function handleSkyClick(e) {
     }, 700); // Slightly increased interval so the screen doesn't get too crowde
 }
 
-        function closeVideo() {
+    function closeVideo() {
     const personalSong = document.getElementById('personalSong');
-    personalSong.volume = 1.0; // Back to 100%
+    personalSong.volume = 1.0; // Back to full volume
     
     document.getElementById('greetingVideo').pause();
     document.getElementById('videoSection').style.display = 'none';
     showFinale(); 
 }
-        function replaySurprise() {
+   function replaySurprise() {
     const personalSong = document.getElementById('personalSong');
-    personalSong.volume = 0.2; // Drop to 20%
+    const vid = document.getElementById('greetingVideo');
+    
+    // Lower the background music so MJ can hear your greetings
+    personalSong.volume = 0.2; 
     
     document.getElementById('videoSection').style.display = 'flex';
-    const vid = document.getElementById('greetingVideo');
     vid.play();
     
-    // When video ends, bring volume back up
+    // This part ensures that if she finishes the video, 
+    // the music swells back up and the Stitch finale continues.
     vid.onended = () => {
         closeVideo();
     };
