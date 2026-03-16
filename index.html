@@ -276,7 +276,7 @@ function handleSkyClick(e) {
         function beginMagic(isTest) {
             const intro = document.getElementById('introMusic');
             intro.play().catch(() => {}); 
-            const target = new Date("March 19, 2026 00:00:00").getTime();
+            const target = new Date("March 19, 2026 09:00:00").getTime();
             
             if(!isTest) {
                 const now = new Date().getTime();
@@ -338,7 +338,7 @@ function handleSkyClick(e) {
             sun.style.top = '190%'; 
             
             // Fade out reflection as sun disappears
-            setTimeout(() => { refl.style.opacity = '0'; }, 7000);
+            setTimeout(() => { refl.style.opacity = '0'; }, 6500);
 
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
@@ -364,13 +364,13 @@ function handleSkyClick(e) {
             clearInterval(shootingStarTimer); 
             isNight = false;
             moon.style.top = '190%'; moon.style.opacity = '0'; 
-            refl.style.opacity = '0'; // Hide reflection for transition
+            setTimeout(() => { refl.style.opacity = '0'; }, 1500);
             
-            await new Promise(r => setTimeout(r, 10000));
+            await new Promise(r => setTimeout(r, 8000));
 
             // 4. Dawn Transition
             updateTheme('dawn'); 
-            sun.style.transition = 'top 10s ease-in-out'; 
+            sun.style.transition = 'top 8s ease-in-out'; 
             sun.style.top = '55%'; 
             document.getElementById('sunGlow').style.opacity = "1";
             
@@ -465,7 +465,7 @@ function handleSkyClick(e) {
             const stitch = document.createElement("img");
             // Adjust the path 'emojis/' to wherever you saved them
             stitch.src = `emojis/${stitchGifs[Math.floor(Math.random() * stitchGifs.length)]}`;
-            stitch.style.cssText = "width:80px; height:auto; filter: drop-shadow(0 0 8px #82eeff);";
+            stitch.style.cssText = "width:120px; height:auto; filter: drop-shadow(0 0 8px #82eeff);";
             h.appendChild(stitch);
         } else { 
             // 30% chance: Only Red Hearts (Blue heart removed)
