@@ -18,6 +18,51 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', serif; }
         
+        /* THE ETERNAL STAR */
+        #eternalStar {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            width: 5px;
+            height: 5px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 15px 2px white;
+            z-index: 100;
+            cursor: pointer;
+            pointer-events: auto; /* Specifically enabled for clicking */
+            animation: twinkle 3s infinite ease-in-out;
+            opacity: 0;
+            transition: opacity 5s ease;
+        }
+
+        /* SECRET MESSAGE OVERLAY */
+        #secretOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            text-align: center;
+            color: white;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        .secret-p { 
+            opacity: 0; 
+            transition: opacity 1.5s ease; 
+            margin-bottom: 18px; 
+            font-style: italic; 
+            font-size: 1.05rem; 
+            line-height: 1.6;
+        }
+
         .heart-burst {
             position: absolute; color: #ff4d6d; font-size: 18px; pointer-events: none;
             animation: heartBurst 1s ease-out forwards; z-index: 1000;
@@ -44,20 +89,20 @@
         .sky { height: 60vh; background: linear-gradient(to bottom, var(--curr-t), var(--curr-m), var(--curr-b)); position: relative; overflow: hidden; transition: background var(--ultra-smooth); z-index: 10; }
 
         #wishText { 
-    position: absolute; 
-    bottom: 8%;           /* Lower down, closer to the edge */
-    width: 100%; 
-    text-align: center; 
-    font-size: 0.80rem;    /* Smaller, more delicate font */
-    letter-spacing: 1px;
-    color: white; 
-    opacity: 0; 
-    transition: opacity 2.5s ease; /* Slower fade in/out makes it feel subtle */
-    z-index: 40; 
-    pointer-events: none;
-    font-style: italic;
-    filter: blur(0.5px);   /* Slight blur makes it blend into the atmosphere */
-}
+            position: absolute; 
+            bottom: 8%; 
+            width: 100%; 
+            text-align: center; 
+            font-size: 0.80rem; 
+            letter-spacing: 1px;
+            color: white; 
+            opacity: 0; 
+            transition: opacity 2.5s ease; 
+            z-index: 40; 
+            pointer-events: none;
+            font-style: italic;
+            filter: blur(0.5px);
+        }
         #starField { position: absolute; inset: 0; z-index: 11; opacity: 0; transition: opacity 8s ease; pointer-events: none; }
         .star { position: absolute; background: white; border-radius: 50%; animation: twinkle var(--t) infinite ease-in-out; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
@@ -129,9 +174,29 @@
         <button id="testBtn" onclick="beginMagic(true)">[Dev] Gelo Aves</button>
     </div>
 
+    <div id="secretOverlay" onclick="closeSecret()">
+        <p class="secret-p">If you ever find this…</p>
+        <p class="secret-p">I don’t really say this out loud,</p>
+        <p class="secret-p">but somewhere along the way,</p>
+        <p class="secret-p">you became more than just someone important to me.</p>
+        <p class="secret-p">I don’t know what this means for us,</p>
+        <p class="secret-p">and I’m not asking for anything.</p>
+        <p class="secret-p">I just wanted to be honest.</p>
+        <p class="secret-p">I think I like you.</p>
+        <p class="secret-p">More than I probably should.</p>
+        <p class="secret-p">I didn’t want to make things complicated,</p>
+        <p class="secret-p">so I kept it to myself.</p>
+        <p class="secret-p">But this… felt like the only place I could say it,</p>
+        <p class="secret-p">even if it’s only here.</p>
+        <p class="secret-p" style="margin-top: 20px;">— me</p>
+        <p style="opacity: 0.3; font-size: 0.7rem; margin-top: 30px;">(tap anywhere to close)</p>
+    </div>
+
     <div class="world" id="world">
         <div class="sky" id="sky" onclick="handleSkyClick(event)">
             <div id="starField"></div>
+            <div id="eternalStar" onclick="showEternalMessage(event)"></div>
+            
             <div class="body sun" id="sun"></div>
             <div class="sun-glow" id="sunGlow"></div>
             <div class="body moon" id="moon"></div>
@@ -205,6 +270,28 @@
             }
         }
 
+        /* ETERNAL STAR LOGIC */
+        function showEternalMessage(e) {
+            e.stopPropagation(); // Stop sky heart burst
+            const overlay = document.getElementById('secretOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 100);
+            
+            const lines = document.querySelectorAll('.secret-p');
+            lines.forEach((p, i) => {
+                setTimeout(() => { p.style.opacity = '1'; }, (i * 1200) + 1000);
+            });
+        }
+
+        function closeSecret() {
+            const overlay = document.getElementById('secretOverlay');
+            overlay.style.opacity = '0';
+            setTimeout(() => { 
+                overlay.style.display = 'none';
+                document.querySelectorAll('.secret-p').forEach(p => p.style.opacity = '0');
+            }, 2000);
+        }
+
         function createHeartBurst(x, y) {
             for(let i=0;i<12;i++){
                 const h=document.createElement("div");
@@ -221,34 +308,6 @@
             }
         }
 
-        // 1. Update the Sky Click logic to handle your Easter eggs
-function handleSkyClick(e) {
-    createHeartBurst(e.clientX, e.clientY);
-    const wish = document.getElementById('wishText');
-    
-    const currentTheme = document.documentElement.style.getPropertyValue('--curr-t');
-    const isDawn = currentTheme.includes('--d-top');
-
-    // Set message based on time of day
-    if (isNight) {
-        wish.innerHTML = "I love you more than you'll ever see";
-        wish.style.color = "white";
-    } else if (isDawn) {
-        wish.innerHTML = "More than my heart could ever show";
-        wish.style.color = "#4a344e"; // Darker color for the bright dawn
-    } else {
-        wish.innerHTML = "I love you more than you'll ever know";
-        wish.style.color = "white";
-    }
-
-    // Only fade in to 30% opacity so it's barely there
-    wish.style.opacity = "0.3"; 
-    
-    // Keep it for a bit, then fade away slowly
-    setTimeout(() => { 
-        wish.style.opacity = "0"; 
-    }, 3000);
-}
 
         function revealSecret(e) {
             createHeartBurst(e.clientX, e.clientY);
@@ -330,20 +389,17 @@ function handleSkyClick(e) {
         async function orchestrate() {
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
             
-            // 1. Initial Sunset
-            refl.style.opacity = '0.4'; // Show reflection immediately for existing sun
+            refl.style.opacity = '0.4'; 
+            document.getElementById('eternalStar').style.opacity = '1'; // Star appears with world
             await typeQuote("“Every sunset reminds me of you.”");
             
             await new Promise(r => setTimeout(r, 2000));
             sun.style.top = '190%'; 
-            
-            // Fade out reflection as sun disappears
             setTimeout(() => { refl.style.opacity = '0'; }, 6500);
 
             await new Promise(r => setTimeout(r, 5000));
             document.getElementById('quoteDisplay').style.opacity = "0";
             
-            // 2. Night Transition
             await new Promise(r => setTimeout(r, 2000));
             updateTheme('night'); 
             isNight = true;
@@ -351,7 +407,6 @@ function handleSkyClick(e) {
             document.getElementById('starField').style.opacity = "0.8";
             shootingStarTimer = setInterval(createShootingStar, 600);
             
-            // DELAY moon reflection until it's actually up in the sky
             setTimeout(() => { refl.style.opacity = '0.4'; }, 5000); 
 
             await new Promise(r => setTimeout(r, 4000));
@@ -360,7 +415,6 @@ function handleSkyClick(e) {
             await new Promise(r => setTimeout(r, 7000)); 
             document.getElementById('quoteDisplay').style.opacity = "0";
             
-            // 3. Preparation for Dawn
             clearInterval(shootingStarTimer); 
             isNight = false;
             moon.style.top = '190%'; moon.style.opacity = '0'; 
@@ -368,13 +422,11 @@ function handleSkyClick(e) {
             
             await new Promise(r => setTimeout(r, 8000));
 
-            // 4. Dawn Transition
             updateTheme('dawn'); 
             sun.style.transition = 'top 8s ease-in-out'; 
             sun.style.top = '55%'; 
             document.getElementById('sunGlow').style.opacity = "1";
             
-            // Wait for sun to actually appear before showing reflection
             setTimeout(() => { refl.style.opacity = '0.4'; }, 6000);
 
             setTimeout(async () => {
@@ -433,80 +485,57 @@ function handleSkyClick(e) {
         }
 
         function showFinale() {
-    document.getElementById('videoSection').style.display = 'none';
-    const personalSong = document.getElementById('personalSong');
-    personalSong.volume = 1.0; // Ensure volume is back up
-    personalSong.play();
-    
-    document.getElementById('heartContainer').style.opacity = '0.15';
-    document.getElementById('finaleBanner').style.opacity = '1';
-    document.getElementById('loveText').style.opacity = '1';
-    const b = document.getElementById('endButtons');
-    b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
-    
-    // Define your Stitch emoji filenames here
-    // List your GIF filenames here
-    const stitchGifs = ['stitch1.gif', 'stitch2.gif', 'stitch3.gif']; 
+            document.getElementById('videoSection').style.display = 'none';
+            const personalSong = document.getElementById('personalSong');
+            personalSong.volume = 1.0; 
+            personalSong.play();
+            
+            document.getElementById('heartContainer').style.opacity = '0.15';
+            document.getElementById('finaleBanner').style.opacity = '1';
+            document.getElementById('loveText').style.opacity = '1';
+            const b = document.getElementById('endButtons');
+            b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
+            
+            const stitchGifs = ['stitch1.gif', 'stitch2.gif', 'stitch3.gif']; 
 
-    setInterval(() => {
-        const h = document.createElement("div");
-        h.className = "floating-obj";
-        
-        const roll = Math.random();
-        
-        if (roll > 0.6) { 
-            // 40% chance: Memory Photo
-            const img = document.createElement("img");
-            img.src = photos[Math.floor(Math.random() * photos.length)];
-            img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity:0.8; border:2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);";
-            h.appendChild(img);
-        } else if (roll > 0.2) { 
-            // 30% chance: ANIMATED STITCH GIF
-            const stitch = document.createElement("img");
-            // Adjust the path 'emojis/' to wherever you saved them
-            stitch.src = `emojis/${stitchGifs[Math.floor(Math.random() * stitchGifs.length)]}`;
-            stitch.style.cssText = "width:120px; height:auto; filter: drop-shadow(0 0 8px #82eeff);";
-            h.appendChild(stitch);
-        } else { 
-            // 30% chance: Only Red Hearts (Blue heart removed)
-            h.innerHTML = "❤"; 
-            h.style.color = "#ff4d6d"; 
-            h.style.fontSize = "28px";
-            h.style.textShadow = "0 0 10px rgba(255,255,255,0.3)";
+            setInterval(() => {
+                const h = document.createElement("div");
+                h.className = "floating-obj";
+                const roll = Math.random();
+                if (roll > 0.6) { 
+                    const img = document.createElement("img");
+                    img.src = photos[Math.floor(Math.random() * photos.length)];
+                    img.style.cssText = "width:180px; height:180px; object-fit:cover; border-radius:15px; opacity:0.8; border:2px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);";
+                    h.appendChild(img);
+                } else if (roll > 0.2) { 
+                    const stitch = document.createElement("img");
+                    stitch.src = `emojis/${stitchGifs[Math.floor(Math.random() * stitchGifs.length)]}`;
+                    stitch.style.cssText = "width:120px; height:auto; filter: drop-shadow(0 0 8px #82eeff);";
+                    h.appendChild(stitch);
+                } else { 
+                    h.innerHTML = "❤"; h.style.color = "#ff4d6d"; h.style.fontSize = "28px";
+                }
+                h.style.left = Math.random()*90 + "vw"; 
+                h.style.bottom = "-120px";
+                h.style.animationDuration = (6 + Math.random()*4) + "s";
+                document.body.appendChild(h); 
+                setTimeout(() => h.remove(), 10000);
+            }, 700); 
         }
 
-        h.style.left = Math.random()*90 + "vw"; // Keep them slightly away from the very edge
-        h.style.bottom = "-120px";
-        h.style.animationDuration = (6 + Math.random()*4) + "s"; // Slightly slower for better visibility
-        document.body.appendChild(h); 
-        setTimeout(() => h.remove(), 10000);
-    }, 700); // Slightly increased interval so the screen doesn't get too crowde
-}
-
-    function closeVideo() {
-    const personalSong = document.getElementById('personalSong');
-    personalSong.volume = 1.0; // Back to full volume
-    
-    document.getElementById('greetingVideo').pause();
-    document.getElementById('videoSection').style.display = 'none';
-    showFinale(); 
-}
-   function replaySurprise() {
-    const personalSong = document.getElementById('personalSong');
-    const vid = document.getElementById('greetingVideo');
-    
-    // Lower the background music so MJ can hear your greetings
-    personalSong.volume = 0.2; 
-    
-    document.getElementById('videoSection').style.display = 'flex';
-    vid.play();
-    
-    // This part ensures that if she finishes the video, 
-    // the music swells back up and the Stitch finale continues.
-    vid.onended = () => {
-        closeVideo();
-    };
-}
+        function closeVideo() {
+            document.getElementById('personalSong').volume = 1.0; 
+            document.getElementById('greetingVideo').pause();
+            document.getElementById('videoSection').style.display = 'none';
+            showFinale(); 
+        }
+        function replaySurprise() {
+            document.getElementById('personalSong').volume = 0.2; 
+            document.getElementById('videoSection').style.display = 'flex';
+            const vid = document.getElementById('greetingVideo');
+            vid.play();
+            vid.onended = () => { closeVideo(); };
+        }
         function resetJourney() { location.reload(); }
 
         function updateTheme(mode) {
