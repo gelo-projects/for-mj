@@ -48,7 +48,7 @@
     bottom: 8%;           /* Lower down, closer to the edge */
     width: 100%; 
     text-align: center; 
-    font-size: 0.85rem;    /* Smaller, more delicate font */
+    font-size: 0.80rem;    /* Smaller, more delicate font */
     letter-spacing: 1px;
     color: white; 
     opacity: 0; 
@@ -276,7 +276,7 @@ function handleSkyClick(e) {
         function beginMagic(isTest) {
             const intro = document.getElementById('introMusic');
             intro.play().catch(() => {}); 
-            const target = new Date("March 19, 2026 09:00:00").getTime();
+            const target = new Date("March 19, 2026 00:00:00").getTime();
             
             if(!isTest) {
                 const now = new Date().getTime();
