@@ -18,51 +18,59 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body, html { width: 100%; height: 100%; overflow: hidden; background: #020111; font-family: 'Segoe UI', serif; }
         
-        /* THE ETERNAL STAR */
         #eternalStar {
             position: absolute;
-            top: 50px;
-            right: 50px;
-            width: 5px;
-            height: 5px;
+            top: 30px; /* Slightly lower from the very edge */
+            right: 30px;
+            width: 8px; /* Slightly larger for easier tapping on mobile */
+            height: 8px;
             background: white;
             border-radius: 50%;
-            box-shadow: 0 0 15px 2px white;
+            box-shadow: 0 0 15px 3px white;
             z-index: 100;
             cursor: pointer;
-            pointer-events: auto; /* Specifically enabled for clicking */
+            pointer-events: auto;
             animation: twinkle 3s infinite ease-in-out;
             opacity: 0;
             transition: opacity 5s ease;
+            -webkit-tap-highlight-color: transparent; /* Removes the blue box on tap */
         }
 
-        /* SECRET MESSAGE OVERLAY */
+/* IMPROVED MOBILE-FRIENDLY SECRET OVERLAY */
         #secretOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.75); /* Darker for better contrast on mobile */
+            backdrop-filter: blur(12px);
             z-index: 2000;
             display: none;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start; /* Start from top to allow scrolling */
             align-items: center;
-            padding: 40px;
+            padding: 60px 25px; /* Extra top padding for the star area */
             text-align: center;
             color: white;
             opacity: 0;
-            transition: opacity 2s;
+            transition: opacity 1.5s;
+            overflow-y: auto; /* Allows scrolling on small screens */
+            -webkit-overflow-scrolling: touch;
         }
 
         .secret-p { 
             opacity: 0; 
             transition: opacity 1.5s ease; 
-            margin-bottom: 18px; 
+            margin-bottom: 20px; 
             font-style: italic; 
-            font-size: 1.05rem; 
+            /* Responsive font: min 0.9rem, ideal 1.1rem, max 1.3rem */
+            font-size: clamp(0.9rem, 4vw, 1.2rem); 
             line-height: 1.6;
+            max-width: 90%; /* Prevents text from hitting screen edges */
         }
-
+        .secret-p:last-of-type {
+            margin-bottom: 60px; /* Space before the "tap to close" hint */
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
         .heart-burst {
             position: absolute; color: #ff4d6d; font-size: 18px; pointer-events: none;
             animation: heartBurst 1s ease-out forwards; z-index: 1000;
@@ -136,8 +144,29 @@
         .final-content { color: #4a344e; line-height: 1.6; font-style: italic; font-size: 1.2rem; margin-bottom: 20px; white-space: pre-line; }
         
         #finaleGroup { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%); text-align: center; width: 100%; z-index: 600; }
-        #finaleBanner { color: #ff3366; font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 20px #fff; opacity: 0; cursor: pointer; transition: opacity 1s; display: block; margin-bottom: 5px; }
-        #secretFinal { font-size: 0.95rem; color: #ff4d6d; opacity: 0; transition: opacity 2s; font-style: italic; display: block; height: 1.2rem; }
+        #finaleBanner { 
+            color: #ff3366; 
+            font-size: 2.2rem; 
+            font-weight: bold; 
+            text-shadow: 0 0 20px #fff; 
+            opacity: 0; 
+            transition: opacity 1s; 
+            display: block; 
+            margin-bottom: 10px;
+            pointer-events: none; /* No longer needs to be clickable */
+        }
+
+        #secretFinal { 
+            font-size: 1rem; 
+            color: #ff4d6d; 
+            opacity: 0; 
+            transition: opacity 3s ease; /* Slower, more emotional fade */
+            font-style: italic; 
+            display: block; 
+            height: auto;
+            text-shadow: 0 0 10px rgba(255, 77, 109, 0.3);
+            margin-top: 15px;
+        }
         #loveText { margin-top: 15px; color: #ff3366; font-size: 1.8rem; font-weight: 350; font-style: italic; opacity: 0; transition: opacity 2s ease; pointer-events: none; }
 
         #heartContainer { display: grid; grid-template-columns: repeat(9, clamp(30px, 10vw, 55px)); grid-auto-rows: clamp(30px, 10vw, 55px); gap: 5px; margin-top: 20px; position: relative; justify-content: center; display: none; }
@@ -271,16 +300,31 @@
 
         /* ETERNAL STAR LOGIC */
         function showEternalMessage(e) {
-            e.stopPropagation(); // Stop sky heart burst
-            const overlay = document.getElementById('secretOverlay');
-            overlay.style.display = 'flex';
-            setTimeout(() => overlay.style.opacity = '1', 100);
+        e.stopPropagation();
+        const overlay = document.getElementById('secretOverlay');
+        overlay.scrollTo(0, 0); 
+        overlay.style.display = 'flex';
+        setTimeout(() => overlay.style.opacity = '1', 100);
+        
+        const lines = document.querySelectorAll('.secret-p');
+        let currentDelay = 500; // Initial start delay
+
+        lines.forEach((p, i) => {
+            // Check if it's the final paragraph
+            const isLastLine = p.innerText.includes("even if it’s only here");
             
-            const lines = document.querySelectorAll('.secret-p');
-            lines.forEach((p, i) => {
-                setTimeout(() => { p.style.opacity = '1'; }, (i * 1200) + 1000);
-            });
-        }
+            // Add extra delay before showing the very last line
+            if (isLastLine) {
+                currentDelay += 3000; // Significant pause for the finale
+            } else {
+                currentDelay += 1600; // Standard pacing
+            }
+
+            setTimeout(() => { 
+                p.style.opacity = "1"; 
+            }, currentDelay);
+        });
+    }
 
         function closeSecret() {
             const overlay = document.getElementById('secretOverlay');
@@ -490,10 +534,26 @@
             personalSong.play();
             
             document.getElementById('heartContainer').style.opacity = '0.15';
-            document.getElementById('finaleBanner').style.opacity = '1';
-            document.getElementById('loveText').style.opacity = '1';
+            
+            // Show the main Birthday banner and "We love you"
+            const banner = document.getElementById('finaleBanner');
+            const loveText = document.getElementById('loveText');
+            banner.style.opacity = '1';
+            loveText.style.opacity = '1';
+
+            // SHOW THE SECRET FINAL LINE AFTER 13 SECONDS
+            setTimeout(() => {
+                const secret = document.getElementById('secretFinal');
+                secret.style.opacity = '1';
+                
+                // Optional: add a heart burst when the secret text appears
+                const rect = secret.getBoundingClientRect();
+                createHeartBurst(rect.left + (rect.width/2), rect.top);
+            }, 13000); // 13000ms = 13 seconds
+
             const b = document.getElementById('endButtons');
-            b.style.display = 'flex'; setTimeout(() => b.style.opacity = '1', 500);
+            b.style.display = 'flex'; 
+            setTimeout(() => b.style.opacity = '1', 2000); // Buttons appear after 2s
             
             const stitchGifs = ['stitch1.gif', 'stitch2.gif', 'stitch3.gif']; 
 
