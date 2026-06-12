@@ -20,9 +20,9 @@
         
         #eternalStar {
             position: absolute;
-            top: 30px; /* Slightly lower from the very edge */
+            top: 30px; 
             right: 30px;
-            width: 8px; /* Slightly larger for easier tapping on mobile */
+            width: 8px; 
             height: 8px;
             background: white;
             border-radius: 50%;
@@ -33,26 +33,26 @@
             animation: twinkle 3s infinite ease-in-out;
             opacity: 0;
             transition: opacity 5s ease;
-            -webkit-tap-highlight-color: transparent; /* Removes the blue box on tap */
+            -webkit-tap-highlight-color: transparent; 
         }
 
-/* IMPROVED MOBILE-FRIENDLY SECRET OVERLAY */
+        /* IMPROVED MOBILE-FRIENDLY SECRET OVERLAY */
         #secretOverlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75); /* Darker for better contrast on mobile */
+            background: rgba(0, 0, 0, 0.75); 
             backdrop-filter: blur(12px);
             z-index: 2000;
             display: none;
             flex-direction: column;
-            justify-content: flex-start; /* Start from top to allow scrolling */
+            justify-content: flex-start; 
             align-items: center;
-            padding: 60px 25px; /* Extra top padding for the star area */
+            padding: 60px 25px; 
             text-align: center;
             color: white;
             opacity: 0;
             transition: opacity 1.5s;
-            overflow-y: auto; /* Allows scrolling on small screens */
+            overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
         }
 
@@ -61,13 +61,12 @@
             transition: opacity 1.5s ease; 
             margin-bottom: 20px; 
             font-style: italic; 
-            /* Responsive font: min 0.9rem, ideal 1.1rem, max 1.3rem */
             font-size: clamp(0.9rem, 4vw, 1.2rem); 
             line-height: 1.6;
-            max-width: 90%; /* Prevents text from hitting screen edges */
+            max-width: 90%; 
         }
         .secret-p:last-of-type {
-            margin-bottom: 60px; /* Space before the "tap to close" hint */
+            margin-bottom: 60px; 
             font-weight: 400;
             letter-spacing: 0.5px;
         }
@@ -153,14 +152,14 @@
             transition: opacity 1s; 
             display: block; 
             margin-bottom: 10px;
-            pointer-events: none; /* No longer needs to be clickable */
+            pointer-events: none; 
         }
 
         #secretFinal { 
             font-size: 1rem; 
             color: #ff4d6d; 
             opacity: 0; 
-            transition: opacity 3s ease; /* Slower, more emotional fade */
+            transition: opacity 3s ease; 
             font-style: italic; 
             display: block; 
             height: auto;
@@ -188,6 +187,68 @@
         @keyframes flyUp { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 0.5; } 100% { transform: translateY(-1000px) scale(1.1); opacity: 0; } }
 
         .sun-glow { position: absolute; left: 50%; top: 60%; transform: translate(-50%, -50%); width: 600px; height: 300px; background: radial-gradient(circle, rgba(255,200,120,0.6) 0%, rgba(255,200,120,0.2) 40%, transparent 70%); opacity: 0; transition: opacity 4s ease; pointer-events: none; }
+
+        /* NEW CUSTOM POP-UP FOR LONG MESSAGES */
+        .long-modal-overlay {
+            display: none; 
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 1, 17, 0.85);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9000; /* Stays above your main overlays */
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        .long-modal-box {
+            background: #fffdfa;
+            color: #332233;
+            width: 90%;
+            max-width: 550px;
+            max-height: 75vh;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0px 15px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255, 77, 109, 0.2);
+        }
+        .long-modal-box h2 {
+            font-size: 1.4rem;
+            color: #ff3366;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #f0e4df;
+            padding-bottom: 8px;
+            font-style: italic;
+        }
+        .long-modal-body {
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-right: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .long-modal-body p {
+            margin-bottom: 12px;
+        }
+        .long-modal-close {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 50px;
+            cursor: pointer;
+            align-self: flex-end;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .long-modal-close:active {
+            transform: scale(0.95);
+        }
     </style>
 </head>
 <body onload="initVisuals()">
@@ -195,6 +256,37 @@
     <audio id="introMusic" loop preload="auto"><source src="intro_waiting.mp3" type="audio/mpeg"></audio>
     <audio id="bgMusic" loop preload="auto"><source src="magic.mp3" type="audio/mpeg"></audio>
     <audio id="personalSong" loop preload="auto"><source src="personal_song.mp3" type="audio/mpeg"></audio>
+
+    <div id="longMessageModal" class="long-modal-overlay">
+        <div class="long-modal-box">
+            <h2>A letter left behind</h2>
+            <div class="long-modal-body">
+                <p><strong>Not for today, For whenever life brings you back here</strong></p>
+                <p>If you're reading this, then somehow you found your way back here.</p>
+                <p>I don't know how much time has passed or what life looks like for you now. Maybe you're happy, maybe you're chasing your dreams, or maybe you're facing challenges I know nothing about.</p>
+                <p>Whatever the case, I hope life has been kind to you.</p>
+                <p>There are things I've never really stopped carrying with me.</p>
+		<p>I still think about you sometimes. I still hope you're doing well. And if I'm being honest, a part of me will probably always love and care about you.</p>
+		<p>I also miss the little world that came with you.</p>
+		<p>I miss Nanay and Tatay, the simple conversations, the familiar moments, and the warmth of being welcomed. I miss the laughter of your nieces and the little things that once felt so ordinary but became memories I'll always treasure.</p>
+		<p>Those people and moments became a part of my life too, and I'll always be grateful for them.</p>
+		<p>I'm not saying any of this because I expect anything from you. Life moves forward, and I understand that.</p>
+		<p>I just wanted you to know that the time we shared meant more to me than I could ever fully explain.</p>
+		<p>And if life ever becomes difficult, if you're carrying something too heavy, if you ever feel like you have nobody to talk to, don't forget that you can still reach out.</p>
+		<p>Not because of who we used to be.</p>
+		<p>Not because I expect anything in return.</p>
+		<p>But because I genuinely care about you and your well-being.</p>
+		<p>Life may take us in different directions, and things may never be the same as they once were, but you'll always have a friend in me.</p>
+		<p>Maybe not in the way we used to be.</p>
+		<p>Maybe not as part of your everyday life.</p>
+		<p>But as someone who will always wish the best for you, quietly rooting for you from afar.</p>
+		<p>Take care of yourself, Ma'am.</p>
+		<p></p>	
+		<p>— Angelo</p>			
+            </div>
+            <button class="long-modal-close" onclick="closeLongModal()">Continue 🤍</button>
+        </div>
+    </div>
 
     <div id="startOverlay">
         <p style="opacity: 0.6; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 20px;">FOR MJ</p>
@@ -211,7 +303,7 @@
         <p class="secret-p">I don’t know what this means for us,</p>
         <p class="secret-p">and I’m not asking for anything.</p>
         <p class="secret-p">I just wanted to be honest.</p>
-	    <p class="secret-p">All I ever wanted was your happiness.</p>
+        <p class="secret-p">All I ever wanted was your happiness.</p>
         <p class="secret-p">I didn’t want to make things complicated,</p>
         <p class="secret-p">so I kept it to myself.</p>
         <p class="secret-p">But this… felt like the only place I could say it,</p>
@@ -248,7 +340,7 @@
         <div id="heartContainer"></div>
 
         <div id="finaleGroup">
-            <div id="finaleBanner" onclick="revealSecret(event)">HAPPY BIRTHDAY MJ! <span style="color: #ff3333;">❤</span></div>
+            <div id="finaleBanner" onclick="revealSecret(event)">HAPPY BIRTHDAY MJ! <span style="color: #ff3366;">❤</span></div>
             <div id="loveText">We love you <span style="color: #ff3333;">❤</span></div>
             <div id="secretFinal">And I'm really glad you're part of my life.</div>
         </div>
@@ -297,39 +389,54 @@
             }
         }
 
+        /* NEW: FUNCTIONS TO HANDLE POP-UP ACTION */
+        function openLongModal() {
+            const modal = document.getElementById('longMessageModal');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.style.opacity = '1'; }, 50);
+        }
+
+        function closeLongModal() {
+            const modal = document.getElementById('longMessageModal');
+            modal.style.opacity = '0';
+            setTimeout(() => { 
+                modal.style.display = 'none'; 
+                // Core background orchestration launches only AFTER they read your note
+                orchestrate(); 
+            }, 600);
+        }
+
         /* ETERNAL STAR LOGIC */
         function showEternalMessage(e) {
-        e.stopPropagation();
-        const overlay = document.getElementById('secretOverlay');
-        overlay.scrollTo(0, 0); 
-        overlay.style.display = 'flex';
-        setTimeout(() => overlay.style.opacity = '1', 100);
-        
-        const lines = document.querySelectorAll('.secret-p');
-        let currentDelay = 500; // Initial start delay
-
-        lines.forEach((p, i) => {
-            // Check if it's the final paragraph
-            const isLastLine = p.innerText.includes("even if it’s only here");
+            e.stopPropagation();
+            const overlay = document.getElementById('secretOverlay');
+            overlay.scrollTo(0, 0); 
+            overlay.style.display = 'flex';
+            setTimeout(() => overlay.style.opacity = '1', 100);
             
-            // Add extra delay before showing the very last line
-            if (isLastLine) {
-                currentDelay += 3000; // Significant pause for the finale
-            } else {
-                currentDelay += 1600; // Standard pacing
-            }
+            const lines = document.querySelectorAll('.secret-p');
+            let currentDelay = 500; 
 
-            setTimeout(() => { 
-                p.style.opacity = "1"; 
-            }, currentDelay);
-        });
-    }
+            lines.forEach((p, i) => {
+                const isLastLine = p.innerText.includes("even if it’s only here");
+                
+                if (isLastLine) {
+                    currentDelay += 3000; 
+                } else {
+                    currentDelay += 1600; 
+                }
+
+                setTimeout(() => { 
+                    p.style.opacity = "1"; 
+                }, currentDelay);
+            });
+        }
 
         function closeSecret() {
             const overlay = document.getElementById('secretOverlay');
             overlay.style.opacity = '0';
             setTimeout(() => { 
-                overlay.style.display = 'none';
+                overlay.style.display = 'none'; 
                 document.querySelectorAll('.secret-p').forEach(p => p.style.opacity = '0');
             }, 2000);
         }
@@ -349,7 +456,6 @@
                 setTimeout(()=>h.remove(),1000);
             }
         }
-
 
         function revealSecret(e) {
             createHeartBurst(e.clientX, e.clientY);
@@ -411,7 +517,9 @@
             setTimeout(() => { 
                 document.getElementById('startOverlay').style.display = 'none'; 
                 document.getElementById('world').style.opacity = '1'; 
-                orchestrate(); 
+                
+                // INTEGRATION CHANGE: Open the long message pop-up box first instead of chaining orchestrate right away
+                openLongModal();
             }, 1000);
         }
 
@@ -432,7 +540,7 @@
             const sun = document.getElementById('sun'), moon = document.getElementById('moon'), refl = document.getElementById('reflection');
             
             refl.style.opacity = '0.4'; 
-            document.getElementById('eternalStar').style.opacity = '1'; // Star appears with world
+            document.getElementById('eternalStar').style.opacity = '1'; 
             await typeQuote("“Every sunset reminds me of you.”");
             
             await new Promise(r => setTimeout(r, 2000));
@@ -534,25 +642,21 @@
             
             document.getElementById('heartContainer').style.opacity = '0.15';
             
-            // Show the main Birthday banner and "We love you"
             const banner = document.getElementById('finaleBanner');
             const loveText = document.getElementById('loveText');
             banner.style.opacity = '1';
             loveText.style.opacity = '1';
 
-            // SHOW THE SECRET FINAL LINE AFTER 13 SECONDS
             setTimeout(() => {
                 const secret = document.getElementById('secretFinal');
                 secret.style.opacity = '1';
-                
-                // Optional: add a heart burst when the secret text appears
                 const rect = secret.getBoundingClientRect();
                 createHeartBurst(rect.left + (rect.width/2), rect.top);
-            }, 13000); // 13000ms = 13 seconds
+            }, 13000); 
 
             const b = document.getElementById('endButtons');
             b.style.display = 'flex'; 
-            setTimeout(() => b.style.opacity = '1', 2000); // Buttons appear after 2s
+            setTimeout(() => b.style.opacity = '1', 2000); 
             
             const stitchGifs = ['stitch1.gif', 'stitch2.gif', 'stitch3.gif']; 
 
